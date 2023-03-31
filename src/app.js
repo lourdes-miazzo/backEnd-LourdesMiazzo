@@ -1,21 +1,35 @@
 import express from "express"
-//se importa ProductManager para poder utilizar la clase aquí
-import ProductManager from "./components/productManager.js"
+
+import productRouter from "./routes/productRouter.js"
+import cartRouter from "./routes/cartRouter.js"
 
 
 const app= express()
+app.use(express.json())
 //la siguiente linea se agrega debido a que el dinamismo de los
 // url aumentan
 app.use(express.urlencoded({extended:true}))
 
+app.use("/api/products", productRouter)
+app.use("/api/carts", cartRouter)
+
+
+app.listen(8083, ()=>{
+    console.log("servidor escuchando en puerto 8083")
+}) 
+
+
+
+
+
 //se instancia la clase ProductManager para poder usar su método readFiles(), 
 //no uso getProducts()porque en realidad en getProducts estoy llamando a readFiles 
 //que es el que se encarga de parsear el arcivo JSON para leerlo
-const newProduct = new ProductManager()
-const productos = newProduct.readFiles()
+   //const newProduct = new ProductManager()
+   //const productos = newProduct.readFiles()
 
 
-app.get("/products",async (req,res)=>{
+/* app.get("/products",async (req,res)=>{
     //se crea la variable limit que guarda en su interior lo que viene por parametro, 
     //se pone el + para que la string se transforme en numero
     let limit = +req.query.limit
@@ -47,7 +61,4 @@ app.get("/products/:pid",async (req, res)=>{
     res.send(prodId)
 })
 
-
-app.listen(8083, ()=>{
-    console.log("servidor escuchando en puerto 8083")
-}) 
+ */
