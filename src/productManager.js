@@ -12,7 +12,6 @@ class ProductManager{
         this.path= "./src/products.json"
         this.status= true
     }
-
     //agregando este método me evito tener que escribir constantemente estas lineas.
     //no podría hacer lo mismo con writeFiles porque la informacion que se escribe es diferente
     //segun el método donde se lo utilice por ej: en getProducts()se escribe/guarda un array vacío, pero en
@@ -42,21 +41,20 @@ class ProductManager{
     }
 
 
-    async addProduct(title, description, price, thumbnail, code, stock, category, status=true){
+    async addProduct(objectProd, status=true){
         try{
-            const repeatedCode= this.#products.find(repCod=> repCod.code === code)
+            this.#products= await this.readFiles()
+
+            this.#id = this.#products[this.#products.length -1].id
+            
+            const repeatedCode= this.#products.find(repCod=> repCod.code === objectProd )
             if(repeatedCode){
                 return `El código ${code} está repetido` 
             } else{
-                const newProduct={
-                    title, 
-                    description, 
-                    price, 
-                    thumbnail, 
-                    code, 
-                    stock,
-                    category
+                const newProduct= {
+                    objectProd
                 }
+                console.log(newProduct)
                 //si no se repite el código entonces se evalua que los valores en newProduct NO retornen
                 //undefined y entonces se puedan agregar al array #products, junto a un id autoincrementable
                 if(!Object.values(newProduct).includes(undefined)){

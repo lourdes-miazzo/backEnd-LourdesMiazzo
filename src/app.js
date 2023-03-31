@@ -14,8 +14,8 @@ app.use("/api/products", productRouter)
 app.use("/api/carts", cartRouter)
 
 
-app.listen(8083, ()=>{
-    console.log("servidor escuchando en puerto 8083")
+app.listen(8082, ()=>{
+    console.log("servidor escuchando en puerto 8082")
 }) 
 
 
