@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "title": "S/t",
+    "description": "120 por 80 cms",
+    "price": 165000,
+    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/2020-1.jpg?alt=media&token=97a6bba7-ef61-4c87-98ab-1430979cf2f5",
+    "code": "jkl124",
+    "stock": 2,
+    "category": "l",
+    "status": true,
+    "id": 1
+  },
+  {
+    "title": "S/T",
+    "description": "70 por 70 cms",
+    "price": 84000,
+    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/2018-1.jpg?alt=media&token=5f10af30-4f9a-43d3-b396-0d8406781f4e",
+    "code": "jkl127",
+    "stock": 2,
+    "category": "m",
+    "status": true,
+    "id": 3
+  },
+  {
+    "title": "Generativo fractal",
+    "description": "100  por 100 cms",
+    "price": 171800,
+    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/2022-1.jpg?alt=media&token=0052f005-41ba-4f95-9649-025206272012",
+    "code": "jkl128",
+    "stock": 3,
+    "category": "l",
+    "status": true,
+    "id": 4
+  },
+  {
+    "title": "Generativo Hegagonal",
+    "description": "120 por 80 cms",
+    "price": 165000,
+    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/2021-2.jpg?alt=media&token=a46429c6-28b6-4ca3-ad37-281a3da3d28b",
+    "code": "jkl132",
+    "stock": 2,
+    "category": "l",
+    "status": true,
+    "id": 5
+  }
+]

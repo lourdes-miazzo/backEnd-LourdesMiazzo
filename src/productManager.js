@@ -17,9 +17,14 @@ class ProductManager{
     //segun el método donde se lo utilice por ej: en getProducts()se escribe/guarda un array vacío, pero en
     //deleteProduct() se guarda un nuevo array que dejó afuera al objeto cuyo id pasamos como párametro 
     async readFiles(){
-        let read = await fs.promises.readFile(this.path, "utf-8")
-        //uso JSON.parse para convertir string en objeto y poder mostrarlo/leeerlo más facilmente
-        return JSON.parse(read)
+        try{
+            let read = await fs.promises.readFile(this.path, "utf-8")
+            //uso JSON.parse para convertir string en objeto y poder mostrarlo/leeerlo más facilmente
+            return JSON.parse(read)
+        }
+        catch(error){
+            throw new Error(e)
+        }
     }
 
 
@@ -32,7 +37,7 @@ class ProductManager{
             //const getProd = await fs.promises.readFile(this.path, "utf-8")
             //return JSON.parse(getProd) 
             let getPr = await this.readFiles()
-            return getPr
+            return json.parse(getPr)
         }
         catch(e){
             await fs.promises.writeFile(this.path, "[]")
@@ -44,17 +49,15 @@ class ProductManager{
     async addProduct(objectProd, status=true){
         try{
             this.#products= await this.readFiles()
-
-            this.#id = this.#products[this.#products.length -1].id
+            if(this.#products.length>0){
+                this.#id = this.#products[this.#products.length -1].id
+            }
             
             const repeatedCode= this.#products.find(repCod=> repCod.code === objectProd )
             if(repeatedCode){
                 return `El código ${code} está repetido` 
             } else{
-                const newProduct= {
-                    objectProd
-                }
-                console.log(newProduct)
+                const newProduct = objectProd
                 //si no se repite el código entonces se evalua que los valores en newProduct NO retornen
                 //undefined y entonces se puedan agregar al array #products, junto a un id autoincrementable
                 if(!Object.values(newProduct).includes(undefined)){
@@ -124,7 +127,7 @@ class ProductManager{
             return `Producto modificado correctamente`
         }
         catch(e){
-            return e
+            throw new Error(e)
         }
     
     }

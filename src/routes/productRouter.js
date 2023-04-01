@@ -7,7 +7,7 @@ const productRouter = Router()
 //no uso getProducts()porque en realidad en getProducts estoy llamando a readFiles 
 //que es el que se encarga de parsear el arcivo JSON para leerlo
 const newProduct = new ProductManager()
-const productos = newProduct.readFiles()
+const productos = await newProduct.readFiles()
 
 productRouter.get("/", async(req,res)=>{
     try{
@@ -16,7 +16,8 @@ productRouter.get("/", async(req,res)=>{
         let limit = +req.query.limit
         //si no se pasa un numero como limite se envia la lista completa de los productos
         if(!limit){
-        res.send(await productos)
+        const allProd = await productos
+        res.send(allProd)
         }else{
         //sino se usa la informacion guardada en limites para hacer un slice del 
         //array, que comience en cero y muestre productos hasta el limite selecionado
@@ -47,7 +48,7 @@ productRouter.get("/:pid", async(req,res)=>{
      if(!prodId){
          res.status(404).send("Product not found")
      }
-     res.status(200).send("Producto Encontrado", prodId)
+     res.status(200).send(prodId)
     }
     catch(error){
         res.status(400).send(error)
@@ -57,9 +58,8 @@ productRouter.get("/:pid", async(req,res)=>{
 productRouter.post("/", async (req,res)=>{
     try {
         const addedProd = req.body;
-        console.log(`Router:`,addedProd);
         const result = await newProduct.addProduct(addedProd);
-        res.send(result);
+        res.status(201).send(result);
     }
     catch (error) {
         res.send(error);
@@ -71,18 +71,19 @@ productRouter.put("/:pid", async (req, res)=>{
         const pid= +req.params.pid
         const {body}=req.body
         let update = await newProduct.updateProduct(body, pid)
-        res.status(200).send("Producto Actualizado", update)
+        res.status(200).send(update)
     }
     catch(error){
         res.status(404).send(error)
     }  
     })
 
+
 productRouter.delete("/:pid", async(req,res)=>{
     try{
         const pid= +req.params.pid
         const deleteProd= await newProduct.deleteProduct(pid)
-        res.send("productoEliminado", deleteProd)
+        res.send(deleteProd)
     }
   catch(error){
     res.send(error)
