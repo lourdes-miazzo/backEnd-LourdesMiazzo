@@ -1,80 +1,73 @@
 import fs from 'fs';
+import { nanoid } from 'nanoid';
 
 class ProductManager{
-    //el hashtag lo vuelve privado e inaccesible 
-    #products= []
-    //para llamar a lo que se encuentra dentro de static llamo a la clase, en este caso ProductManager.id
-    #id = 0
-    path= ``
-    status=``
     constructor(){
-        this.#products = []
         this.path= "./src/products.json"
-        this.status= true
     }
-    //agregando este método me evito tener que escribir constantemente estas lineas.
-    //no podría hacer lo mismo con writeFiles porque la informacion que se escribe es diferente
-    //segun el método donde se lo utilice por ej: en getProducts()se escribe/guarda un array vacío, pero en
-    //deleteProduct() se guarda un nuevo array que dejó afuera al objeto cuyo id pasamos como párametro 
+
+
+    async writeFiles(element){
+        try{
+            await fs.promises.writeFile(this.path, JSON.stringify(element, null, 2))
+        }
+        catch(e){
+            throw new Error(e) 
+        }
+    }
+    
+
+
     async readFiles(){
         try{
             let read = await fs.promises.readFile(this.path, "utf-8")
             //uso JSON.parse para convertir string en objeto y poder mostrarlo/leeerlo más facilmente
             return JSON.parse(read)
         }
-        catch(error){
+        catch(e){
             throw new Error(e)
         }
     }
 
 
-    //getProducts busca leer el archivo Json desp de parsearlo y luego mostrarlo,
-    //si no lo encuentra crea el archivo(usando writeFile) con un array vacio donde se guardaran 
-    //los productos
+    async isExist(id){
+        try{
+            const idExist= await this.getProducts()
+            return idExist.find(prod=> prod.id === id)
+        }
+        catch(e){
+            throw new Error(e)
+        }
+    }
+
+
     async getProducts(){
-        try{
-            //llamo al metodo readFiles() y me evito escribir lo siguiente:
-            //const getProd = await fs.promises.readFile(this.path, "utf-8")
-            //return JSON.parse(getProd) 
-            let getPr = await this.readFiles()
-            return json.parse(getPr)
+        try{ 
+            return await this.readFiles()
         }
         catch(e){
-            await fs.promises.writeFile(this.path, "[]")
-            return `El archivo no existe, pero ahora hemos creado uno`
+            throw new Error(e)
         }
     }
 
 
-    async addProduct(objectProd, status=true){
+    async addProduct(element){
         try{
-            this.#products= await this.readFiles()
-            if(this.#products.length>0){
-                this.#id = this.#products[this.#products.length -1].id
-            }
-            
-            const repeatedCode= this.#products.find(repCod=> repCod.code === objectProd )
+            const data = await this.getProducts()
+            const repeatedCode= data.find(repCode=> repCode.code === element.code)
             if(repeatedCode){
-                return `El código ${code} está repetido` 
-            } else{
-                const newProduct = objectProd
-                //si no se repite el código entonces se evalua que los valores en newProduct NO retornen
-                //undefined y entonces se puedan agregar al array #products, junto a un id autoincrementable
-                if(!Object.values(newProduct).includes(undefined)){
-                    this.#id ++
-                    this.#products.push({
-                        ...newProduct,
-                        status,
-                        id:this.#id
-                    })
-                    //finalmente escribimos la informacion del array actualizado en el archivo .json
-                    //usamos JSON.stringify para convertir un objeto en cadena de texto JSON, el null y 2
-                    //sirven para darle mayor facilidad de lectura al archivo .json
-                    await fs.promises.writeFile(this.path, JSON.stringify(this.#products, null, 2))
-                    return `Producto agregado correctamente` 
+                return `El código ${element.code} está repetido`
+            }else{
+                const valorVacio = Object.values(element).includes(undefined)
+                if(!valorVacio){
+                    element.status = true
+                    element.id= nanoid(7)
+                    const addingProd = [...data, element]
+                    await this.writeFiles(addingProd)
+                    return "Producto agregado correctamente"
                 }else{
-                    return "Todos los campos son obligatorios" 
-                } 
+                    return "Todos los campos son obligatorios"
+                }
             }
         }
         catch(e){
@@ -83,17 +76,14 @@ class ProductManager{
     }
 
 
-    async getProductById(prodId){
+
+
+    async getProductById(id){
         try{
-            //uso de readFiles para ahorrar lineas
-            const idProd = await this.readFiles()
-            //se busca en array idProd si algun objeto tiene un id que coincida
-            const product = idProd.find(prod=> prod.id === prodId)
+            const product = await this.isExist(id)
             if(!product){
-                //si no coincide se avisa
-                return `Product with ID:${prodId} not found`
+                return `Producto con ID: ${id} no encontrado`
             }else{
-                //si coincide se muestra el producto
                 return product
             }
         }
@@ -102,29 +92,19 @@ class ProductManager{
         }
     } 
 
-     //se recibe por parámetro el id y los parámetros que forman el objeto, donde se encontrarán 
-     //los nuevos valores a ser modificados
-    async updateProduct(product){ 
+
+    async updateProduct(product,id){ 
         try{
-            //se individualiza el id del objeto completo pasado
-            const idProd= product.id
-            //se utiliza método deleteProduct()para borrar primero el objeto q coincida con el id ingresado
-            await this.deleteProduct(idProd)
-            //con el método readFiles() se lee lo que aún queda en el archivo, es decir los otros objetos 
-            //que no se borraron y los guarda en variable oldProd
-            const oldProd = await this.readFiles()
-            //en el array modifiedProd se guardan el objeto con sus valores modificados y además
-            //se hace un spread de los objetos que están en el array oldProd 
-            const modifiedProd= [
-                {
-                ...product,
-                //mantengo el id que se guardó en idProd antes de eliminar el objeto completo y lo uso ahora
-                idProd
-                }, 
-                ...oldProd
-                ]
-            const modif = await fs.promises.writeFile(this.path, JSON.stringify(modifiedProd, null, 2))
-            return `Producto modificado correctamente`
+        const prodExistent = await this.isExist(id)
+        if(!prodExistent){
+            "Producto a ser modificado no encontrado"
+        }else{
+            await this.deleteProduct(id)
+            const oldProd= await this.getProducts()
+            const updated= [{...product, id : id}, ...oldProd]
+            await this.writeFiles(updated)
+            return `Producto modificado correctamente` 
+        }
         }
         catch(e){
             throw new Error(e)
@@ -134,20 +114,15 @@ class ProductManager{
 
     async deleteProduct(id){
         try{
-            //se accede a leer el archivo
-            const prod = await this.readFiles()
-            //se busca el producto que coincide con el id ingresado
-            const prodFind = prod.find(p=> p.id===id)
-            //si existe un producto cuyo id coincide se pasa a filtrar el array para guardar ahora 
-            //en un nuevo array(prodDeleted) todos los productos que no tienen ese id, por lo tanto al 
-            //quedar fuera del nuevo array, queda eliminado
-            if(prodFind){
-                const prodDeleted= prod.filter(p=> p.id!==id)
-                await fs.promises.writeFile(this.path, JSON.stringify(prodDeleted, null, 2))
+            const prodExistent = await this.isExist(id)
+            if(prodExistent){
+                const data = await this.getProducts()
+                const prodDeleted= data.filter(p=> p.id !== id)
+                await this.writeFiles(prodDeleted)
                 return "Producto eliminado correctamente"
             }
             else{
-                return "El producto que quieres borrar no existe"
+                return "El producto que quieres eliminar no existe"
             }
         }
         catch(e){
@@ -156,6 +131,7 @@ class ProductManager{
     }
 }
 
+export default ProductManager;
 
 /* let main= async()=>{
     try{ 
@@ -195,6 +171,3 @@ class ProductManager{
     }
 }
 main()     */
-
-
-export default ProductManager;

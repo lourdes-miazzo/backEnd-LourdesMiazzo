@@ -1,5 +1,27 @@
 [
   {
+    "title": "Hexagonal transicional 0.1",
+    "description": "20 por 20 cms, enmarcadas",
+    "price": 35000,
+    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/2021-4.jpg?alt=media&token=c5570257-81f9-4f03-bcc6-c8b75f4e5ee4",
+    "code": "jkl122",
+    "stock": 4,
+    "category": "s",
+    "status": true,
+    "id": "TVmrARP"
+  },
+  {
+    "title": "Warm magical tropical oceans",
+    "description": "100 por 140 cms",
+    "price": 200000,
+    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/2017-4.jpg?alt=media&token=83af4b88-ad01-4a09-8f19-f8c82be9e2d1",
+    "code": "jkl123",
+    "stock": 1,
+    "category": "l",
+    "status": true,
+    "id": "7sIn-rZ"
+  },
+  {
     "title": "S/t",
     "description": "120 por 80 cms",
     "price": 165000,
@@ -8,7 +30,18 @@
     "stock": 2,
     "category": "l",
     "status": true,
-    "id": 1
+    "id": "Ke_UsJG"
+  },
+  {
+    "title": "Complementario",
+    "description": "120 por 80 cms",
+    "price": 165000,
+    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/GF-2628copia.jpg?alt=media&token=d275a8f6-3466-4414-be83-6e01840727c4",
+    "code": "jkl125",
+    "stock": 4,
+    "category": "l",
+    "status": true,
+    "id": "D8UKjnu"
   },
   {
     "title": "S/T",
@@ -19,7 +52,7 @@
     "stock": 2,
     "category": "m",
     "status": true,
-    "id": 3
+    "id": "m5nRd-j"
   },
   {
     "title": "Generativo fractal",
@@ -30,17 +63,6 @@
     "stock": 3,
     "category": "l",
     "status": true,
-    "id": 4
-  },
-  {
-    "title": "Generativo Hegagonal",
-    "description": "120 por 80 cms",
-    "price": 165000,
-    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/2021-2.jpg?alt=media&token=a46429c6-28b6-4ca3-ad37-281a3da3d28b",
-    "code": "jkl132",
-    "stock": 2,
-    "category": "l",
-    "status": true,
-    "id": 5
+    "id": "IInYEEi"
   }
 ]

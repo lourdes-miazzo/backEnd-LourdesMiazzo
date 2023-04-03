@@ -3,32 +3,50 @@ import CartManager from "../cartManager.js";
 
 const cartRouter = Router()
 
-const carrito = new CartManager
+const carrito = new CartManager()
 
-cartRouter.post("/", async(req,res)=>{
+
+cartRouter.get("/", async(req,res)=>{
     try{
-
+        const verCarritos= await carrito.getCarts()
+        res.status(200).send(verCarritos)
     }
-    catch(error){
-        res.send(error)
+    catch(e){
+        res.status(400).send(e)
     }
 })
 
+cartRouter.post("/", async(req,res)=>{
+    try{
+    const nuevoCarrito = await carrito.addCart()
+    res.status(200).send(nuevoCarrito)
+    }
+    catch(e){
+        res.status(400).send(e)
+    }
+})
+ 
+
 cartRouter.get("/:cid", async (req,res)=>{
     try{
-        
+        const cid = req.params.cid
+        const cartId = await carrito.getCartId(cid)
+        res.status(200).send(cartId)
     }
-    catch(error){
-        res.send(error)
+    catch(e){
+        res.status(400).send(e)
     }
 })
 
 cartRouter.post("/:cid/products/:pid", async(req,res)=>{
     try{
-
+        const cid= req.params.cid
+        const pid = req.params.pid
+        const addProdInCart = await carrito.addProductInCart(cid, pid)
+        res.status(200).send(addProdInCart)
     }
-    catch(error){
-        res.send(error)
+    catch(e){
+        res.status(400).send(e)
     }
 })
 
