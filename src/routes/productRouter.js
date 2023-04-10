@@ -1,6 +1,7 @@
 import { Router } from "express";
 import ProductManager from "../productManager.js";
 
+
 const productRouter = Router()
 
 //se instancia la clase ProductManager para poder usar su métodos, 

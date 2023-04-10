@@ -2,6 +2,7 @@ import fs from "fs"
 import { nanoid } from "nanoid"
 import ProductManager from "./productManager.js"
 
+
 const newProduct = new ProductManager()
 
 class CartManager{
@@ -94,7 +95,6 @@ class CartManager{
             const completeCarts = await this.getCarts()
             const filterCart = completeCarts.filter(cart=> cart.id !== cid)
 
-          
             if(cartExist.products.some(prod=> prod.id === pid)){
                 const addSameInCart = cartExist.products.find(prod => prod.id=== pid)
                 addSameInCart.quantity ++
@@ -107,15 +107,15 @@ class CartManager{
                 await this.writeFiles(cartNewProdAdded)
                 return "Producto agregado al carrito correctamente"
             }
-           
-           
         }
         catch(e){
             throw new Error(e)
         }
     }
-}
 
+ 
+    }
+    
 
 
 export default CartManager
