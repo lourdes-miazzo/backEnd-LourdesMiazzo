@@ -3,18 +3,23 @@ import { engine } from 'express-handlebars';
 import { resolve } from 'path';
 import { Server } from 'socket.io';
 import { nanoid } from 'nanoid';
-
+import mongoose from 'mongoose';
 import productRouter from "./routes/productRouter.js"
 import cartRouter from "./routes/cartRouter.js"
 import viewsRouter from "./routes/viewsRouter.js"
+
 
 void(async() =>
 {
     try
     {
+        await mongoose.connect("mongodb+srv://lourdesmiazzo:YjGaKF8OdMQuOzD7@clusterecommerce.z3tscrp.mongodb.net/ecommerce", {
+            useNewUrlParser:true,
+            useUnifiedTopology: true
+        })
+        
         const SERVER_PORT = 8083;
     
-
         const app = express();
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
@@ -25,6 +30,7 @@ void(async() =>
             layoutsDir: `${viewsPath}/layouts`,
             defaultLayout: `${viewsPath}/layouts/main.handlebars`,
         }));
+
         app.set('view engine', 'handlebars');
         app.set('views', viewsPath);
 
@@ -39,6 +45,7 @@ void(async() =>
 
 
         let productosArray= []
+
 
         const socketServer = new Server(httpServer);
         socketServer.on('connection', socket=>{
@@ -58,12 +65,25 @@ void(async() =>
                 productosArray = productosArray.filter(prod=> prod.id !== idDelete)
                 socketServer.emit('productList', productosArray)
             })
-        })
+
+            socket.on('messages', async (element)=>{
+                console.log(element)
+                const result = await messagesModel(element)
+                result.save()
+                let arrayMensajes = await messagesModel.find()
+                socketServer.emit('arrayMensajes' ,arrayMensajes)
+            })
+                
+            
+        }) 
 
     }
     catch (e)
     {
         console.log(e);
     }
+
+
 })();
+
 

@@ -1,24 +1,22 @@
 import { Router } from "express";
-import ProductManager from "../productManager.js";
+import { productsModel } from "../dao/models/products.models.js";
+
 
 
 const productRouter = Router()
 
-//se instancia la clase ProductManager para poder usar su métodos, 
-const newProduct = new ProductManager()
+
 
 
 productRouter.get("/", async(req,res)=>{
     try{
         let limit = +req.query.limit
         if(!limit){
-            res.send(await newProduct.getProducts())
+            let encontrados= await productsModel.find({status: true})
+            res.status(200).send({result: "succes", message: "Products found",payload: encontrados})
         }else{
-        //se usa la informacion guardada en limites para hacer un slice del 
-        //array, que comience en cero y muestre productos hasta el limite selecionado
-            let allProducts = await newProduct.getProducts()
-            let limitDefined= allProducts.slice(0, limit)
-            res.status(200).send(limitDefined) 
+            let all = await productsModel.find({status: true}).limit(limit)
+            res.status(200).send({result: "succes", message: "Products found", payload: all}) 
         }
     }
     catch(error){
@@ -31,8 +29,8 @@ productRouter.get("/", async(req,res)=>{
 productRouter.get("/:pid", async(req,res)=>{
     try{
     const pid= req.params.pid
-    const getProd= await newProduct.getProductById(pid)
-    res.status(200).send(getProd)
+    let findOneProd=  await productsModel.findById(pid)
+    res.status(200).send({result: "succes", message: `Product with Id: ${pid} found`, payload: findOneProd})
     }
     catch(error){
         res.status(400).send(error)
@@ -41,9 +39,10 @@ productRouter.get("/:pid", async(req,res)=>{
 
 productRouter.post("/", async (req,res)=>{
     try {
-        const addedProd = req.body;
-        const result = await newProduct.addProduct(addedProd);
-        res.status(201).send(result);
+        const body = req.body;
+        const result = await productsModel.create(body);
+        await result.save()
+        res.status(201).send({result: "succes", message: `New product created`, payload: result});
     }
     catch (error) {
         res.status(404).send(error)
@@ -54,8 +53,8 @@ productRouter.put("/:pid", async (req, res)=>{
     try{
         const pid= req.params.pid
         const body=req.body
-        let update = await newProduct.updateProduct(body, pid)
-        res.status(200).send(update)
+        let update = await productsModel.updateOne({_id: pid}, body)
+        res.status(200).send({result: "succes", message: `Product updated`, payload: update})
     }
     catch(error){
         res.status(404).send(error)
@@ -66,13 +65,15 @@ productRouter.put("/:pid", async (req, res)=>{
 productRouter.delete("/:pid", async(req,res)=>{
     try{
         const pid= req.params.pid
-        const deleteProd= await newProduct.deleteProduct(pid)
-        res.status(200).send(deleteProd)
+        const deleteProd= await productsModel.updateOne({_id: pid}, {$set: {status: false}})
+        res.status(200).send({result: "succes", message: `Product deleted`, payload: deleteProd})
     }
   catch(error){
     res.status(400).send(error)
   }
 })
+
+
 
 
 

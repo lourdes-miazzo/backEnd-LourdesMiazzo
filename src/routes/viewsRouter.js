@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ProductManager from "../productManager.js";
+import ProductManager from "../dao/manager/fileSystem/productManager.js";
 
 
 const newProduct= new ProductManager()
@@ -7,15 +7,15 @@ const newProduct= new ProductManager()
 
 const viewsRouter= Router()
 
+
 viewsRouter.get("/", async(req,res)=>{
     try{
         const productos= await newProduct.getProducts()
-        res.render('index', {title: "productos disponibles", productos})
+        res.render('home', {title: "productos disponibles", productos})
     }
     catch(error){
         res.status(404).send(error)
     }
-  
 })
 
 viewsRouter.get("/realtimeproducts",  async (req,res)=>{
@@ -26,4 +26,6 @@ viewsRouter.get("/realtimeproducts",  async (req,res)=>{
         res.status(404).send(error)
     }
 })
+
+
 export default viewsRouter
