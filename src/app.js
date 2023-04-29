@@ -1,4 +1,6 @@
 import express from 'express';
+import dotenv from "dotenv"
+dotenv.config()
 import { engine } from 'express-handlebars';
 import { resolve } from 'path';
 import { Server } from 'socket.io';
@@ -13,7 +15,7 @@ void(async() =>
 {
     try
     {
-        await mongoose.connect("mongodb+srv://lourdesmiazzo:YjGaKF8OdMQuOzD7@clusterecommerce.z3tscrp.mongodb.net/ecommerce", {
+        await mongoose.connect(process.env.MONGO_DB_URI, {
             useNewUrlParser:true,
             useUnifiedTopology: true
         })
