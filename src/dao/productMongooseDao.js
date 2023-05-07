@@ -1,10 +1,10 @@
 import { productsModel } from "../models/products.models.js"
 
 class ProductMongooseDao{
-    async findList(limit){
+    async findList(category, limit, sort, page){
         try{
-            const document = await productsModel.find({status: true}).limit(limit)
-            return document.map(doc=>({
+            const document = await productsModel.paginate(category, {limit, page, sort: {price: sort} })
+            document.docs= document.docs.map(doc=>({
                 id: doc._id,
                 title: doc.title,
                 description: doc.description,
@@ -15,6 +15,7 @@ class ProductMongooseDao{
                 category: doc.category,
                 status: doc.status,
             }))
+            return document
         }
         catch (error) {
             throw error
@@ -38,7 +39,6 @@ class ProductMongooseDao{
         catch (error) {
             throw error
         }
-        
     }
     async createNew(body){
         try{

@@ -7,9 +7,9 @@ class ProductManager{
         this.dao = new ProductMongooseDao()
     }
     
-    async findList(limit){
+    async findList(category, limit, sort, page){
         try{
-            return this.dao.findList(limit)
+            return this.dao.findList(category, limit, sort, page)
         }
         catch(e){
             throw e
@@ -47,6 +47,7 @@ class ProductManager{
             throw e
         }
     }
+    
 }
 
 export default ProductManager

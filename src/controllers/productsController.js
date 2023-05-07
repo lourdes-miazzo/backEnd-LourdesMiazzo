@@ -3,26 +3,27 @@ import ProductManager from "../manager/mongoDB/productManager.js"
 export const getList = async(req,res)=>{
     try{
         const manager = new ProductManager
-        let limit = +req.query.limit
-        if(!limit){
-            let all= await manager.findList()
-            res.status(200).send({
-                result: "success", 
-                message: "Products found",
-                payload: all})
-        }else{
-            let limitProd = await manager.findList(limit)
-            res.status(200).send({
-                result: "success",
-                message: "Products found", 
-                payload: limitProd}) 
+        let cat = req.query.cat 
+        let limit = req.query.limit ? +req.query.limit : 10 
+        let sort = req.query.sort ? +req.query.sort : undefined
+        let page = req.query.page ? +req.query.page : 1
+        
+        let category = {status: true};
+        if (cat !== undefined) {
+        category = {category: cat};
         }
+
+        let result= await manager.findList(category, limit, sort, page)
+        res.status(200).send({
+            result: "success", 
+            message: `Products found`, 
+            payload: result   
+        })
     }
     catch(error){
         res.status(404).send(error)
     }
 }
-
 
 
 export const getOne =async(req,res)=>{

@@ -37,6 +37,38 @@ class CartManager{
             throw e
         }
     }
+    async deleteProd(cid, pid){
+        try{
+            return this.dao.deleteProd(cid, pid)
+        }
+        catch(e){
+            throw e
+        }
+    }
+    async deleteAllInsideCart(cid){
+        try{
+            return this.dao.deleteAllInsideCart(cid)
+        }
+        catch(e){
+            throw e
+        }
+    }
+    async productsUpdated(cid, body){
+        try{
+            return this.dao.productsUpdated(cid, body)
+        }
+        catch(e){
+            throw e
+        }
+    }
+    async oneProdUpdated(cid, pid, body){
+        try{
+            return this.dao.oneProdUpdated(cid, pid, body)
+        }
+        catch(e){
+            throw e
+        }
+    }
 }
 
 export default CartManager

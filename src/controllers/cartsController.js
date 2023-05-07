@@ -1,5 +1,5 @@
 import CartManager from "../manager/mongoDB/cartManager.js"
-import { cartsModel } from "../models/carts.model.js"
+
 
 export const gelList = async(req,res)=>{
     try{
@@ -64,5 +64,70 @@ export const saveProdInCart = async (req, res) => {
         }
 }
 
+export const deleteProdInCart = async (req,res)=>{
+    try{
+        const {cid, pid} = req.params
+        const manager= new CartManager
+        const prodInCart= await manager.deleteProd(cid, pid)
 
+            res.status(200).send({
+                result: "success", 
+                message: `Product ${pid} deleted from cart ${cid}`,
+                payload:prodInCart})
+    }catch (e) {
+            res.status(400).send(e);
+        }
+}
+
+export const deleteAllProdInCart= async(req,res)=>{
+    try{
+        const {cid} = req.params
+        const manager= new CartManager
+        const deleteAllInCart= await manager.deleteAllInsideCart(cid)
+    
+        res.status(200).send({
+            result: "success", 
+            message: `Cart ${cid} empty`,
+            payload:deleteAllInCart})
+    }catch (e) {
+            res.status(400).send(e);
+        }
+}
+
+export const updateCart= async (req,res)=>{
+    try{
+        const {cid} = req.params
+        const body= req.body
+        const manager= new CartManager
+        const updateProds= await manager.productsUpdated(cid, body)
+
+        res.status(200).send({
+            result: "success", 
+            message: `Cart ${cid} updated`,
+            payload: updateProds})
+    }catch (e) {
+            res.status(400).send(e);
+        }
+}
+
+export const updateProdInCart = async (req,res)=>{
+    try{
+        const {cid, pid} = req.params
+        const body = req.body
+        const manager= new CartManager
+        const updateOneProd=  await manager.oneProdUpdated(cid, pid, body)
+        if(!updateOneProd){
+            res.status(200).send({
+                message: "you don't have the product you want to update"})
+        }else{
+            res.status(200).send({
+                result: "success", 
+                message: `Product ${pid} updated in cart ${cid}`,
+                payload: updateOneProd})
+        }
+    }catch (e) {
+            res.status(400).send(e);
+        }
+ 
+}
 
