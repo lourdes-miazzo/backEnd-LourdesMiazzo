@@ -3,7 +3,7 @@ import CartManager from "../manager/mongoDB/cartManager.js"
 
 export const gelList = async(req,res)=>{
     try{
-        const manager = new CartManager
+        const manager = new CartManager()
         const verCarritos= await manager.getCarts()
 
         res.status(200).send({
@@ -19,7 +19,7 @@ export const gelList = async(req,res)=>{
 export const getOne = async (req,res)=>{
     try{
         const cid = req.params.cid
-        const manager = new CartManager
+        const manager = new CartManager()
         const cartId = await manager.getOneCart(cid)
 
         res.status(200).send({
@@ -34,7 +34,7 @@ export const getOne = async (req,res)=>{
 
 export const saveNew = async(req,res)=>{
     try{
-        const manager = new CartManager
+        const manager = new CartManager()
         const nuevoCarrito = await manager.newCart()
 
         res.status(201).send({
@@ -51,7 +51,7 @@ export const saveNew = async(req,res)=>{
 export const saveProdInCart = async (req, res) => {
         try {
             const {cid, pid} = req.params
-            const manager= new CartManager
+            const manager= new CartManager()
             const prodInCart= await manager.addProd(cid, pid)
 
             res.status(200).send({
@@ -67,7 +67,7 @@ export const saveProdInCart = async (req, res) => {
 export const deleteProdInCart = async (req,res)=>{
     try{
         const {cid, pid} = req.params
-        const manager= new CartManager
+        const manager= new CartManager()
         const prodInCart= await manager.deleteProd(cid, pid)
 
             res.status(200).send({
@@ -82,7 +82,7 @@ export const deleteProdInCart = async (req,res)=>{
 export const deleteAllProdInCart= async(req,res)=>{
     try{
         const {cid} = req.params
-        const manager= new CartManager
+        const manager= new CartManager()
         const deleteAllInCart= await manager.deleteAllInsideCart(cid)
     
         res.status(200).send({
@@ -98,7 +98,7 @@ export const updateCart= async (req,res)=>{
     try{
         const {cid} = req.params
         const body= req.body
-        const manager= new CartManager
+        const manager= new CartManager()
         const updateProds= await manager.productsUpdated(cid, body)
 
         res.status(200).send({
@@ -114,7 +114,7 @@ export const updateProdInCart = async (req,res)=>{
     try{
         const {cid, pid} = req.params
         const body = req.body
-        const manager= new CartManager
+        const manager= new CartManager()
         const updateOneProd=  await manager.oneProdUpdated(cid, pid, body)
         if(!updateOneProd){
             res.status(200).send({

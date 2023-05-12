@@ -2,7 +2,7 @@ import ProductManager from "../manager/mongoDB/productManager.js"
 
 export const getList = async(req,res)=>{
     try{
-        const manager = new ProductManager
+        const manager = new ProductManager()
         let cat = req.query.cat 
         let limit = req.query.limit ? +req.query.limit : 10 
         let sort = req.query.sort ? +req.query.sort : undefined
@@ -29,7 +29,7 @@ export const getList = async(req,res)=>{
 export const getOne =async(req,res)=>{
     try{
     const pid= req.params.pid
-    const manager = new ProductManager
+    const manager = new ProductManager()
     let findOneProd=  await manager.getOne(pid)
 
     res.status(200).send({
@@ -45,7 +45,7 @@ export const getOne =async(req,res)=>{
 export const saveNew=async (req,res)=>{
     try {
         const body = req.body;
-        const manager = new ProductManager
+        const manager = new ProductManager()
         const result = await manager.createNew(body)
 
         res.status(201).send({
@@ -62,7 +62,7 @@ export const update = async (req, res)=>{
     try{
         const pid= req.params.pid
         const body=req.body
-        const manager = new ProductManager
+        const manager = new ProductManager()
         let updateProd = await manager.updateProd(pid, body)
 
         res.status(200).send({
@@ -79,7 +79,7 @@ export const update = async (req, res)=>{
 export const deleteOne = async(req,res)=>{
     try{
         const pid= req.params.pid
-        const manager = new ProductManager
+        const manager = new ProductManager()
         const deleteProd= await manager.deleteProd(pid)
 
         res.status(204).send({
