@@ -30,10 +30,8 @@ export const oneUser = async (req,res)=>{
 }
 export const saveNewUser = async (req,res)=>{
     try{
-        const body = req.params.body
-
         const manager = new UserManager()
-        const user = await manager.create(body)
+        const user = await manager.create(req.body)
 
         res.status(201).send({ 
             status: 'success',

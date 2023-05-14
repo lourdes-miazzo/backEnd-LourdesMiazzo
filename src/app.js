@@ -30,7 +30,7 @@ void(async() =>
             store: mongoStore.create({
                 mongoUrl: process.env.MONGO_DB_URI,
                 mongoOptions: { useNewUrlParser:true, useUnifiedTopology: true },
-                ttl: 10
+                ttl: 20
             }),
             secret: 'CoderS3cR3tC0D3',
             resave: false,

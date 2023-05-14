@@ -45,7 +45,6 @@ class UserMongooseDao{
                 lastName: document.lastName,
                 email: document.email,
                 age: document.age,
-                password: document.password
             }
         }
         catch(e){
@@ -73,25 +72,6 @@ class UserMongooseDao{
     async deleteOne(uid){
         try{
             return userModel.deleteOne({_id: uid})
-        }
-        catch(e){
-            throw e
-        }
-    }
-    async getOneByEmail(email){
-        try{
-            const document = await userModel.findOne({email})
-            if(!document){
-                throw new Error("User dont exist")
-            }
-            return {
-                id: document?._id,
-                firstName: document?.firstName,
-                lastName: document?.lastName,
-                email: document?.email,
-                age: document?.age,
-                password: document?.password
-            }
         }
         catch(e){
             throw e

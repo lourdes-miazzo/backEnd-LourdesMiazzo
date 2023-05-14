@@ -45,14 +45,7 @@ class UserManager{
             throw e
         }
     }
-    async getOneByEmail(email){
-        try{
-            return this.dao.getOneByEmail(email)
-        }
-        catch(e){
-            throw e
-        }
-    }
+ 
 }
 
 export default UserManager
