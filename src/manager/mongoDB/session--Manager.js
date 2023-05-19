@@ -1,4 +1,4 @@
-import SessionMongooseDao from "../../dao/sessionMongooseDao.js";
+import SessionMongooseDao from "../../dao/session--MongooseDao.js";
 
 class SessionManager{
     constructor(){
@@ -12,9 +12,9 @@ class SessionManager{
                 throw e
             }
         }
-        async comparePassword(user, password){
+        async collate(password, user){
             try{
-                return this.dao.comparePassword(user, password)
+                return this.dao.collate(password, user)
             }
             catch(e){
                 throw e

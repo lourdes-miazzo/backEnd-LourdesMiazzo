@@ -1,5 +1,5 @@
 import userModel from "../models/users.model.js";
-import bcrypt from "bcrypt"
+import { passwordsCompare, createHash } from "../shared/index.js";
 
 class SessionMongooseDao{
     async getOneByEmail(email){
@@ -21,9 +21,9 @@ class SessionMongooseDao{
             throw e
         }
     }
-    async comparePassword(user, password){
+    async collate(password, user){
         try{
-            return bcrypt.compare(password, user.password)
+            return passwordsCompare(password, user)
         }
         catch(e){
             throw e
@@ -31,7 +31,7 @@ class SessionMongooseDao{
     }
     async create(body){
         try{
-            const hashedPassword = await bcrypt.hash(body.password, 10)
+            const hashedPassword = await createHash(body)
             const userHashed = {...body, password : hashedPassword}
             const document = await userModel.create(userHashed)
 

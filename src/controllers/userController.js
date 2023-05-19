@@ -1,6 +1,8 @@
-import UserManager from "../manager/mongoDB/userManager.js"
+import UserManager from "../manager/mongoDB/user--Manager.js"
+import idValidation from "../validations/idValidation.js"
+import updateUserValidation from "../validations/updateUserValidation.js"
 
-export const allUsers = async (req,res)=>{
+export const allUsers = async (req,res, next)=>{
     try{
         let limit = req.query.limit ? +req.query.limit : 10 
         let page = req.query.page ? +req.query.page : 1
@@ -12,11 +14,13 @@ export const allUsers = async (req,res)=>{
         res.status(200).send({ status: 'success', users: users.docs, ...users, docs: undefined })
     }
     catch(e){
-        throw e
+        next(e)
     }
 }
-export const oneUser = async (req,res)=>{
+export const oneUser = async (req,res, next)=>{
     try{
+        await idValidation.parseAsync(req.params)
+        console.log(idValidation)
         const {uid} = req.params
 
         const manager = new UserManager()
@@ -25,10 +29,10 @@ export const oneUser = async (req,res)=>{
         res.status(200).send({ status: 'success', user })
     }
     catch(e){
-        throw e
+        next(e)
     }
 }
-export const saveNewUser = async (req,res)=>{
+export const saveNewUser = async (req,res, next)=>{
     try{
         const manager = new UserManager()
         const user = await manager.create(req.body)
@@ -39,11 +43,12 @@ export const saveNewUser = async (req,res)=>{
             payload: user})
     }
     catch(e){
-        throw e
+        next(e)
     }
 }
-export const updateUser = async (req,res)=>{
+export const updateUser = async (req,res, next)=>{
     try{
+        await updateUserValidation.parseAsync({...req.params, ...req.body})
         const {uid} = req.params
 
         const manager = new UserManager()
@@ -55,10 +60,10 @@ export const updateUser = async (req,res)=>{
             payload: result })
     }
     catch(e){
-        throw e
+        next(e)
     }
 }
-export const deleteUser = async (req,res)=>{
+export const deleteUser = async (req,res, next)=>{
     try{
         const {uid} = req.params
 
@@ -70,6 +75,6 @@ export const deleteUser = async (req,res)=>{
             message: 'User deleted.'})
     }
     catch(e){
-        throw e
+        next(e)
     }
 }

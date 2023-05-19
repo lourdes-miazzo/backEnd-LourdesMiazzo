@@ -1,4 +1,4 @@
-import ProductManager from "../manager/mongoDB/productManager.js"
+import ProductManager from "../manager/mongoDB/product--Manager.js"
 
 export const getList = async(req,res)=>{
     try{

@@ -1,1 +1,3 @@
 MONGO_DB_URI= "mongodb+srv://lourdesmiazzo:YjGaKF8OdMQuOzD7@clusterecommerce.z3tscrp.mongodb.net/ecommerce"
+
+PRIVATE_KEY = "clav2Ocult1"
