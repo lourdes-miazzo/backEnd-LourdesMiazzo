@@ -1,6 +1,7 @@
-import UserManager from "../manager/mongoDB/user--Manager.js"
+import UserManager from "../manager/mongoDB/UserManager.js"
 import idValidation from "../validations/idValidation.js"
 import updateUserValidation from "../validations/updateUserValidation.js"
+import createUserValidation from "../validations/createUserValidation.js"
 
 export const allUsers = async (req,res, next)=>{
     try{
@@ -8,7 +9,6 @@ export const allUsers = async (req,res, next)=>{
         let page = req.query.page ? +req.query.page : 1
 
         const manager = new UserManager()
-    
         const users = await manager.list(limit, page)
     
         res.status(200).send({ status: 'success', users: users.docs, ...users, docs: undefined })
@@ -19,12 +19,12 @@ export const allUsers = async (req,res, next)=>{
 }
 export const oneUser = async (req,res, next)=>{
     try{
-        await idValidation.parseAsync(req.params)
-        console.log(idValidation)
-        const {uid} = req.params
+        await idValidation.parseAsync(req.params.id)
+        
+        const {id} = req.params
 
         const manager = new UserManager()
-        const user = await manager.getOne(uid)
+        const user = await manager.getOne(id)
     
         res.status(200).send({ status: 'success', user })
     }
@@ -34,6 +34,8 @@ export const oneUser = async (req,res, next)=>{
 }
 export const saveNewUser = async (req,res, next)=>{
     try{
+        await createUserValidation.parseAsync(req.body)
+
         const manager = new UserManager()
         const user = await manager.create(req.body)
 
@@ -48,11 +50,11 @@ export const saveNewUser = async (req,res, next)=>{
 }
 export const updateUser = async (req,res, next)=>{
     try{
-        await updateUserValidation.parseAsync({...req.params, ...req.body})
-        const {uid} = req.params
+        await updateUserValidation.parseAsync({...req.params.id, ...req.body})
+        const {id} = req.params
 
         const manager = new UserManager()
-        const result = await manager.updateOne(uid, req.body)
+        const result = await manager.updateOne(id, req.body)
 
         res.status(200).send({
             status: 'success',
@@ -65,10 +67,11 @@ export const updateUser = async (req,res, next)=>{
 }
 export const deleteUser = async (req,res, next)=>{
     try{
-        const {uid} = req.params
+        await idValidation.parseAsync(req.params.id)
+        const {id} = req.params
 
         const manager = new UserManager()
-        await manager.deleteOne(uid)
+        await manager.deleteOne(id)
 
         res.status(200).send({
             status: 'success', 

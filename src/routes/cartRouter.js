@@ -4,11 +4,11 @@ import { gelList, getOne, saveNew, saveProdInCart, deleteProdInCart, deleteAllPr
 const cartRouter = Router()
 
 cartRouter.get("/", gelList)
-cartRouter.get("/:cid", getOne)
+cartRouter.get("/:id", getOne)
 cartRouter.post("/",saveNew)
-cartRouter.post("/:cid/products/:pid", saveProdInCart)
-cartRouter.put("/:cid", updateCart)
-cartRouter.put("/:cid/products/:pid", updateProdInCart)
-cartRouter.delete("/:cid/products/:pid", deleteProdInCart)
-cartRouter.delete("/:cid", deleteAllProdInCart)
+cartRouter.post("/:id/products/:pid", saveProdInCart)
+cartRouter.put("/:id", updateCart)
+cartRouter.put("/:id/products/:pid", updateProdInCart)
+cartRouter.delete("/:id/products/:pid", deleteProdInCart)
+cartRouter.delete("/:id", deleteAllProdInCart)
 export default cartRouter

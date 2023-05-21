@@ -1,15 +1,15 @@
-import SessionManager from "../manager/mongoDB/session--Manager.js"
+import SessionManager from "../manager/mongoDB/SessionManager.js"
 import { generateToken } from "../shared/index.js"
+import createUserValidation from "../validations/createUserValidation.js"
+import loginValidation from "../validations/loginValidation.js"
 
 
-export const login= async (req,res)=>{
+export const login= async (req,res, next)=>{
     try{
+        await loginValidation.parseAsync(req.body)
+        
         const email = req.body.email
         const password = req.body.password 
-
-        if (!email && !password){
-            throw new Error('Email and Password invalid format.')
-        } //agregar zod acá para validar
 
         const manager = new SessionManager()
         const user = await manager.getOneByEmail(email)
@@ -18,9 +18,8 @@ export const login= async (req,res)=>{
             return res.status(401).send({ message: 'Login failed, user dont exist.'})
         }
         //siempre va primero el password que se recibe por body y luego el que se obtiene
-        // al buscar el usuario!!!
+        // al obtener el objeto usuario!!!
         const isHashedPassword = await manager.collate(password, user)
-        console.log(isHashedPassword)
         if (!isHashedPassword)
         {
             return res.status(401).send({ message: 'Login failed, invalid password.'})
@@ -33,11 +32,11 @@ export const login= async (req,res)=>{
         res.status(200).send({accesToken ,message: 'Login success!'})
         }
         catch(e){
-            throw e
+            next(e)
         }
 }
 
-export const current = async(req, res)=>{
+export const current = async(req, res, next)=>{
     try{
         //como se setean las credenciales en el usuario ahora vamos a poder acceder al user y 
         //tener acceso a la info del login
@@ -49,11 +48,13 @@ export const current = async(req, res)=>{
         next(e)
     }
 }
-export const signup= async (req,res)=>{
+export const signup= async (req,res, next)=>{
     try{
-        const manager = new SessionManager();
-        
-        const user = await manager.create(req.body);
+        await createUserValidation.parseAsync(req.body)
+
+        const manager = new SessionManager()
+        const user = await manager.create(req.body)
+
         res.status(201).send({ 
             status: 'success', 
             message: 'User created.',
@@ -61,10 +62,10 @@ export const signup= async (req,res)=>{
         
     }
     catch(e){
-        throw e
+        next(e)
     }
 }
-export const logout= async (req,res)=>{
+export const logout= async (req,res, next)=>{
     try{
         req.session.destroy(err=>{
             if(!err){
@@ -76,6 +77,6 @@ export const logout= async (req,res)=>{
         })
     }
     catch(e){
-        throw e
+        next(e)
     }
 }

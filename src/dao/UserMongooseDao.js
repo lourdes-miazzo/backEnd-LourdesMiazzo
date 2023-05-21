@@ -1,4 +1,5 @@
 import userModel from "../models/users.model.js"
+import { createHash } from "../shared/index.js"
 
 class UserMongooseDao{
     async list(limit, page){
@@ -12,8 +13,8 @@ class UserMongooseDao{
             }))
             return document
     }
-    async getOne(uid){
-            const document = await userModel.findById(uid)
+    async getOne(id){
+            const document = await userModel.findById(id)
             if(!document){
                 throw new Error ("User not found")
             }
@@ -22,12 +23,13 @@ class UserMongooseDao{
                 firstName: document?.firstName,
                 lastName: document?.lastName,
                 email: document?.email,
-                age: document?.age,
-                password: document?.password
+                age: document?.age
             }
     }
     async create(body){
-            const document = await userModel.create(body)
+        const hashedPassword = await createHash(body)
+        const userHashed = {...body, password : hashedPassword}
+        const document = await userModel.create(userHashed)
             return {
                 id: document._id,
                 firstName: document.firstName,
@@ -36,9 +38,9 @@ class UserMongooseDao{
                 age: document.age,
             }
     }
-    async updateOne(uid, body){
+    async updateOne(id, body){
             const document = await userModel.findByIdAndUpdate(
-                {_id: uid},
+                {_id: id},
                     body,
                 {new: true})
             return {
@@ -49,8 +51,8 @@ class UserMongooseDao{
                 age: document.age
             }     
     }
-    async deleteOne(uid){
-            return userModel.deleteOne({_id: uid})
+    async deleteOne(id){
+            return userModel.deleteOne({_id: id})
     }
 }
 

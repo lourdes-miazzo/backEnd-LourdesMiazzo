@@ -5,9 +5,9 @@ import auth from "../middlewares/auth.js";
 const userRouter = Router()
 
 userRouter.get("/", allUsers)
-userRouter.get("/:uid", oneUser)
-userRouter.post("/", saveNewUser) 
-userRouter.put("/:uid", updateUser)
-userRouter.delete("/:uid", deleteUser)
+userRouter.get("/:id", oneUser)
+userRouter.post("/", auth, saveNewUser) 
+userRouter.put("/:id", updateUser)
+userRouter.delete("/:id", deleteUser)
 
 export default userRouter

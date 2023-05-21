@@ -20,7 +20,7 @@ void(async() =>
             useUnifiedTopology: true
         }) 
         
-        const SERVER_PORT = 8082;
+        const SERVER_PORT = 8083;
     
         const app = express();
         app.use(express.json());

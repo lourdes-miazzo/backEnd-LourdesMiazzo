@@ -2,7 +2,6 @@ import { productsModel } from "../models/products.models.js"
 
 class ProductMongooseDao{
     async findList(category, limit, sort, page){
-        try{
             const document = await productsModel.paginate(category, {limit, page, sort: {price: sort} })
             document.docs= document.docs.map(doc=>({
                 id: doc._id,
@@ -16,13 +15,8 @@ class ProductMongooseDao{
                 status: doc.status,
             }))
             return document
-        }
-        catch (error) {
-            throw error
-        }
     }
     async getOne(id){
-        try{
             const document = await productsModel.findById(id)
             return {
                 id: document._id,
@@ -35,13 +29,8 @@ class ProductMongooseDao{
                 category: document.category,
                 status: document.status,
             }
-        }
-        catch (error) {
-            throw error
-        }
     }
     async createNew(body){
-        try{
             const document = await productsModel.create(body)
             return {
                 id: document._id,
@@ -54,14 +43,8 @@ class ProductMongooseDao{
                 category: document.category,
                 status: document.status,
             }
-        }
-        catch (error) {
-            throw error
-        }
-        
     }
     async updateProd(pid, body){
-        try{
             const document = await productsModel.updateOne({_id: pid}, body)
             const docUpdated = await productsModel.findById({_id: pid})
             return {
@@ -75,19 +58,9 @@ class ProductMongooseDao{
                 category: docUpdated.category,
                 status: docUpdated.status,
             }
-        }
-        catch (error) {
-            throw error
-        }
-        
     }
     async deleteProd(pid){
-        try{
             const document = await productsModel.updateOne({_id: pid},  {status: false})
-        }
-        catch (error) {
-            throw error
-        }
         
     }
 }

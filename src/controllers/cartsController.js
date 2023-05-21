@@ -1,7 +1,9 @@
-import CartManager from "../manager/mongoDB/cart--Manager.js"
+import CartManager from "../manager/mongoDB/CartManager.js"
+import idValidation from "../validations/idValidation.js"
+import pidValidation from "../validations/pidValidation.js"
 
 
-export const gelList = async(req,res)=>{
+export const gelList = async(req,res,next)=>{
     try{
         const manager = new CartManager()
         const verCarritos= await manager.getCarts()
@@ -12,27 +14,29 @@ export const gelList = async(req,res)=>{
             payload: verCarritos})
     }
     catch(e){
-        res.status(400).send(e)
+        next(e)
     }
 }
 
-export const getOne = async (req,res)=>{
+export const getOne = async (req,res,next)=>{
     try{
-        const cid = req.params.cid
+        await idValidation.parseAsync(req.params.id)
+
+        const {id} = req.params
         const manager = new CartManager()
-        const cartId = await manager.getOneCart(cid)
+        const cartId = await manager.getOneCart(id)
 
         res.status(200).send({
             result: "success", 
-            message: `Cart with Id: ${cid} found`,
+            message: `Cart with Id: ${id} found`,
             payload: cartId})
     }
     catch(e){
-        res.status(400).send(e)
+        next(e)
     }
 }
 
-export const saveNew = async(req,res)=>{
+export const saveNew = async(req,res,next)=>{
     try{
         const manager = new CartManager()
         const nuevoCarrito = await manager.newCart()
@@ -43,91 +47,98 @@ export const saveNew = async(req,res)=>{
             payload: nuevoCarrito})
         }
     catch(e){
-        res.status(400).send(e)
+        next(e)
     }
 }
- 
 
-export const saveProdInCart = async (req, res) => {
+export const saveProdInCart = async (req, res,next) => {
         try {
-            const {cid, pid} = req.params
+            await idValidation.parseAsync(req.params.id)
+            await pidValidation.parseAsync(req.params.pid)
+            const {id, pid} = req.params
             const manager= new CartManager()
-            const prodInCart= await manager.addProd(cid, pid)
+            const prodInCart= await manager.addProd(id, pid)
 
             res.status(200).send({
                 result: "success", 
-                message: `Product ${pid} added in cart ${cid}`,
+                message: `Product ${pid} added in cart ${id}`,
                 payload:prodInCart})
         
         } catch (e) {
-            res.status(400).send(e);
+            next(e)
         }
 }
 
-export const deleteProdInCart = async (req,res)=>{
+export const deleteProdInCart = async (req,res,next)=>{
     try{
-        const {cid, pid} = req.params
+        await idValidation.parseAsync(req.params.id)
+        await pidValidation.parseAsync(req.params.pid)
+        const {id, pid} = req.params
         const manager= new CartManager()
-        const prodInCart= await manager.deleteProd(cid, pid)
+        const prodInCart= await manager.deleteProd(id, pid)
 
             res.status(200).send({
                 result: "success", 
-                message: `Product ${pid} deleted from cart ${cid}`,
+                message: `Product ${pid} deleted from cart ${id}`,
                 payload:prodInCart})
     }catch (e) {
-            res.status(400).send(e);
+        next(e)
         }
 }
 
-export const deleteAllProdInCart= async(req,res)=>{
+export const deleteAllProdInCart= async(req,res,next)=>{
     try{
-        const {cid} = req.params
+        await idValidation.parseAsync(req.params.id)
+        const {id} = req.params
         const manager= new CartManager()
-        const deleteAllInCart= await manager.deleteAllInsideCart(cid)
+        const deleteAllInCart= await manager.deleteAllInsideCart(id)
     
         res.status(200).send({
             result: "success", 
-            message: `Cart ${cid} empty`,
+            message: `Cart ${id} empty`,
             payload:deleteAllInCart})
     }catch (e) {
-            res.status(400).send(e);
+        next(e)
         }
 }
 
-export const updateCart= async (req,res)=>{
+export const updateCart= async (req,res,next)=>{
     try{
-        const {cid} = req.params
+        await idValidation.parseAsync(req.params.id)
+        const {id} = req.params
         const body= req.body
         const manager= new CartManager()
-        const updateProds= await manager.productsUpdated(cid, body)
+        const updateProds= await manager.productsUpdated(id, body)
 
         res.status(200).send({
             result: "success", 
-            message: `Cart ${cid} updated`,
+            message: `Cart ${id} updated`,
             payload: updateProds})
     }catch (e) {
-            res.status(400).send(e);
+        next(e)
         }
 }
 
-export const updateProdInCart = async (req,res)=>{
+export const updateProdInCart = async (req,res,next)=>{
     try{
-        const {cid, pid} = req.params
+        await idValidation.parseAsync(req.params.id)
+        await pidValidation.parseAsync(req.params.pid)
+        
+        const {id, pid} = req.params
         const body = req.body
         const manager= new CartManager()
-        const updateOneProd=  await manager.oneProdUpdated(cid, pid, body)
+        const updateOneProd=  await manager.oneProdUpdated(id, pid, body)
         if(!updateOneProd){
             res.status(200).send({
                 message: "you don't have the product you want to update"})
         }else{
             res.status(200).send({
                 result: "success", 
-                message: `Product ${pid} updated in cart ${cid}`,
+                message: `Product ${pid} updated in cart ${id}`,
                 payload: updateOneProd})
         }
     }catch (e) {
-            res.status(400).send(e);
+        next(e)
         }
- 
 }
 

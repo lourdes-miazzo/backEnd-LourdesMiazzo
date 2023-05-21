@@ -1,6 +1,9 @@
-import ProductManager from "../manager/mongoDB/product--Manager.js"
+import ProductManager from "../manager/mongoDB/ProductManager.js"
+import createProductValidation from "../validations/createProductValidation.js"
+import pidValidation from "../validations/pidValidation.js"
+import updateProductValidation from "../validations/updateproductValidation.js"
 
-export const getList = async(req,res)=>{
+export const getList = async(req,res,next)=>{
     try{
         const manager = new ProductManager()
         let cat = req.query.cat 
@@ -21,29 +24,33 @@ export const getList = async(req,res)=>{
         })
     }
     catch(error){
-        res.status(404).send(error)
+            next(e)
     }
 }
 
 
-export const getOne =async(req,res)=>{
+export const getOne =async(req,res,next)=>{
     try{
-    const pid= req.params.pid
-    const manager = new ProductManager()
-    let findOneProd=  await manager.getOne(pid)
+        await pidValidation.parseAsync(req.params.pid)
 
-    res.status(200).send({
-        result: "success", 
-        message: `Product with Id: ${pid} found`, 
-        payload: findOneProd})
+        const {pid} = req.params
+        const manager = new ProductManager()
+        let findOneProd=  await manager.getOne(pid)
+
+        res.status(200).send({
+            result: "success", 
+            message: `Product with Id: ${pid} found`, 
+            payload: findOneProd})
     }
     catch(error){
-        res.status(400).send(error)
+        next(e)
     }
 }
 
-export const saveNew=async (req,res)=>{
+export const saveNew=async (req,res,next)=>{
     try {
+        await createProductValidation.parseAsync(req.body)
+
         const body = req.body;
         const manager = new ProductManager()
         const result = await manager.createNew(body)
@@ -54,13 +61,15 @@ export const saveNew=async (req,res)=>{
             payload: result});
     }
     catch (error) {
-        res.status(404).send(error)
+        next(e)
     }
 }
 
-export const update = async (req, res)=>{
+export const update = async (req, res,next)=>{
     try{
-        const pid= req.params.pid
+        await updateProductValidation.parseAsync({...req.params.pid, ...req.body})
+
+        const {pid} = req.params
         const body=req.body
         const manager = new ProductManager()
         let updateProd = await manager.updateProd(pid, body)
@@ -71,13 +80,15 @@ export const update = async (req, res)=>{
             payload: updateProd})
     }
     catch(error){
-        res.status(404).send(error)
+        next(e)
     }  
 }
 
 
-export const deleteOne = async(req,res)=>{
+export const deleteOne = async(req,res,next)=>{
     try{
+        await pidValidation.parseAsync(req.params.pid)
+
         const pid= req.params.pid
         const manager = new ProductManager()
         const deleteProd= await manager.deleteProd(pid)
@@ -87,7 +98,7 @@ export const deleteOne = async(req,res)=>{
             message: `Product deleted`, 
             payload: deleteProd})
     }
-  catch(error){
-    res.status(400).send(error)
-  }
+    catch(error){
+        next(e)
+    }
 }
