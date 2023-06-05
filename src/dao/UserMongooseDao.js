@@ -9,12 +9,15 @@ class UserMongooseDao{
                 firstName: d.firstName,
                 lastName: d.lastName,
                 email: d.email,
-                age: d.age
+                age: d.age, 
+                cart: d.cart,
+                role: d.role,
+                isAdmin: d.isAdmin
             }))
             return document
     }
     async getOne(id){
-            const document = await userModel.findById(id)
+            const document = await userModel.findOne({_id: id})
             if(!document){
                 throw new Error ("User not found")
             }
@@ -23,7 +26,10 @@ class UserMongooseDao{
                 firstName: document?.firstName,
                 lastName: document?.lastName,
                 email: document?.email,
-                age: document?.age
+                age: document?.age,
+                cart: document?.cart,
+                role: document?.role,
+                isAdmin: document?.isAdmin
             }
     }
     async create(body){
@@ -36,10 +42,30 @@ class UserMongooseDao{
                 lastName: document.lastName,
                 email: document.email,
                 age: document.age,
+                cart: document.cart,
+                role: document.role,
+                isAdmin: document.isAdmin
             }
     }
+    async saveCartInUser(id, createCart){
+        const user = await userModel.findById(id)
+        const document = await userModel.findOneAndUpdate(
+            {_id: id},
+            {cart: createCart.id},
+            {new:true})
+            return {
+                id: document._id,
+                firstName: document.firstName,
+                lastName: document.lastName,
+                email: document.email,
+                age: document.age,
+                cart: document.cart,
+                role: document.role,
+                isAdmin: document.isAdmin
+            }  
+    }
     async updateOne(id, body){
-            const document = await userModel.findByIdAndUpdate(
+            const document = await userModel.findOneAndUpdate(
                 {_id: id},
                     body,
                 {new: true})
@@ -48,7 +74,10 @@ class UserMongooseDao{
                 firstName: document.firstName,
                 lastName: document.lastName,
                 email: document.email,
-                age: document.age
+                age: document.age,
+                cart: document.cart,
+                role: document.role,
+                isAdmin: document.isAdmin
             }     
     }
     async deleteOne(id){

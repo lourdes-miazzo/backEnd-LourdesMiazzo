@@ -1,6 +1,4 @@
 import CartManager from "../manager/mongoDB/CartManager.js"
-import idValidation from "../validations/idValidation.js"
-import pidValidation from "../validations/pidValidation.js"
 
 
 export const gelList = async(req,res,next)=>{
@@ -20,9 +18,8 @@ export const gelList = async(req,res,next)=>{
 
 export const getOne = async (req,res,next)=>{
     try{
-        await idValidation.parseAsync(req.params.id)
-
         const {id} = req.params
+
         const manager = new CartManager()
         const cartId = await manager.getOneCart(id)
 
@@ -53,9 +50,9 @@ export const saveNew = async(req,res,next)=>{
 
 export const saveProdInCart = async (req, res,next) => {
         try {
-            await idValidation.parseAsync(req.params.id)
-            await pidValidation.parseAsync(req.params.pid)
-            const {id, pid} = req.params
+            const id = req.params.id
+            const pid= req.params.pid
+            
             const manager= new CartManager()
             const prodInCart= await manager.addProd(id, pid)
 
@@ -71,9 +68,9 @@ export const saveProdInCart = async (req, res,next) => {
 
 export const deleteProdInCart = async (req,res,next)=>{
     try{
-        await idValidation.parseAsync(req.params.id)
-        await pidValidation.parseAsync(req.params.pid)
-        const {id, pid} = req.params
+        const id = req.params.id
+        const pid= req.params.pid
+
         const manager= new CartManager()
         const prodInCart= await manager.deleteProd(id, pid)
 
@@ -88,8 +85,8 @@ export const deleteProdInCart = async (req,res,next)=>{
 
 export const deleteAllProdInCart= async(req,res,next)=>{
     try{
-        await idValidation.parseAsync(req.params.id)
-        const {id} = req.params
+        const id = req.params.id
+
         const manager= new CartManager()
         const deleteAllInCart= await manager.deleteAllInsideCart(id)
     
@@ -104,9 +101,9 @@ export const deleteAllProdInCart= async(req,res,next)=>{
 
 export const updateCart= async (req,res,next)=>{
     try{
-        await idValidation.parseAsync(req.params.id)
         const {id} = req.params
         const body= req.body
+
         const manager= new CartManager()
         const updateProds= await manager.productsUpdated(id, body)
 
@@ -121,13 +118,12 @@ export const updateCart= async (req,res,next)=>{
 
 export const updateProdInCart = async (req,res,next)=>{
     try{
-        await idValidation.parseAsync(req.params.id)
-        await pidValidation.parseAsync(req.params.pid)
-        
         const {id, pid} = req.params
         const body = req.body
+
         const manager= new CartManager()
         const updateOneProd=  await manager.oneProdUpdated(id, pid, body)
+        
         if(!updateOneProd){
             res.status(200).send({
                 message: "you don't have the product you want to update"})

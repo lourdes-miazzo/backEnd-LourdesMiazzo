@@ -1,13 +1,8 @@
 import SessionManager from "../manager/mongoDB/SessionManager.js"
 import { generateToken } from "../shared/index.js"
-import createUserValidation from "../validations/createUserValidation.js"
-import loginValidation from "../validations/loginValidation.js"
-
 
 export const login= async (req,res, next)=>{
     try{
-        await loginValidation.parseAsync(req.body)
-        
         const email = req.body.email
         const password = req.body.password 
 
@@ -28,8 +23,11 @@ export const login= async (req,res, next)=>{
         //se genera un token con la info del usuario,  que se guarda del lado del cliente para 
         //que al navegar por las distintas secciones envie los token en c/req y al ser recibidos 
         //por el servidor son interpretados y se da acceso al recurso  
-        const accesToken = await generateToken(user)
-        res.status(200).send({accesToken ,message: 'Login success!'})
+        const accessToken = await generateToken(user)
+        res.cookie("accessToken", accessToken, {
+            maxAge: 60*60*100,
+            httpOnly: true
+        }).send({message: 'Login success!', accessToken})
         }
         catch(e){
             next(e)
@@ -50,10 +48,9 @@ export const current = async(req, res, next)=>{
 }
 export const signup= async (req,res, next)=>{
     try{
-        await createUserValidation.parseAsync(req.body)
-
+        const body= req.body
         const manager = new SessionManager()
-        const user = await manager.create(req.body)
+        const user = await manager.create(body)
 
         res.status(201).send({ 
             status: 'success', 

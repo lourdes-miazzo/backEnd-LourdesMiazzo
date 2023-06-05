@@ -1,7 +1,4 @@
 import ProductManager from "../manager/mongoDB/ProductManager.js"
-import createProductValidation from "../validations/createProductValidation.js"
-import pidValidation from "../validations/pidValidation.js"
-import updateProductValidation from "../validations/updateproductValidation.js"
 
 export const getList = async(req,res,next)=>{
     try{
@@ -17,6 +14,7 @@ export const getList = async(req,res,next)=>{
         }
 
         let result= await manager.findList(category, limit, sort, page)
+
         res.status(200).send({
             result: "success", 
             message: `Products found`, 
@@ -31,9 +29,8 @@ export const getList = async(req,res,next)=>{
 
 export const getOne =async(req,res,next)=>{
     try{
-        await pidValidation.parseAsync(req.params.pid)
-
         const {pid} = req.params
+
         const manager = new ProductManager()
         let findOneProd=  await manager.getOne(pid)
 
@@ -49,9 +46,8 @@ export const getOne =async(req,res,next)=>{
 
 export const saveNew=async (req,res,next)=>{
     try {
-        await createProductValidation.parseAsync(req.body)
+        const body = req.body
 
-        const body = req.body;
         const manager = new ProductManager()
         const result = await manager.createNew(body)
 
@@ -67,10 +63,9 @@ export const saveNew=async (req,res,next)=>{
 
 export const update = async (req, res,next)=>{
     try{
-        await updateProductValidation.parseAsync({...req.params.pid, ...req.body})
-
         const {pid} = req.params
         const body=req.body
+
         const manager = new ProductManager()
         let updateProd = await manager.updateProd(pid, body)
 
@@ -87,9 +82,8 @@ export const update = async (req, res,next)=>{
 
 export const deleteOne = async(req,res,next)=>{
     try{
-        await pidValidation.parseAsync(req.params.pid)
-
         const pid= req.params.pid
+
         const manager = new ProductManager()
         const deleteProd= await manager.deleteProd(pid)
 

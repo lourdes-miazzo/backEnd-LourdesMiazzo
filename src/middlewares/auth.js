@@ -10,7 +10,7 @@ const auth = (req, res, next)=>{
     const token = authHeader.split(" ")[1]
     //acá se pasa la private key para ver si el tokn se hizo con la misma clave
     jwt.verify(token, process.env.PRIVATE_KEY, (error, credentials)=>{
-        if(error) return res.send(403).status({message: "Authentication error"})
+        if(error) return res.status(403).send({message: "Authentication error"})
     //en este middleware se setean las credenciales
     req.user = credentials.user
     // si todo sale bien este next me permite ir hacia current

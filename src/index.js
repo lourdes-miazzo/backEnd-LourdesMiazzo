@@ -5,11 +5,10 @@ import mongoose from 'mongoose';
 
 import productRouter from "./routes/productRouter.js"
 import cartRouter from "./routes/cartRouter.js"
-import sessionRouter from './routes/sessionRouter.js';
-import userRouter from './routes/userRouter.js';
-import errorHandler from './middlewares/errorHandler.js';
-
-
+import sessionRouter from './routes/sessionRouter.js'
+import userRouter from './routes/userRouter.js'
+import roleRouter from './routes/roleRouter.js'
+import errorHandler from './middlewares/errorHandler.js'
 
 void(async() =>
 {
@@ -19,29 +18,26 @@ void(async() =>
             useNewUrlParser:true,
             useUnifiedTopology: true
         }) 
-        
-        const SERVER_PORT = 8083;
-    
+
         const app = express();
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
-
+        
         app.use("/api/products", productRouter)
         app.use("/api/carts", cartRouter)
         app.use("/api/sessions", sessionRouter)
         app.use("/api/users", userRouter)
+        app.use("/api/roles", roleRouter)
         app.use(errorHandler)
 
-        app.listen(SERVER_PORT, () => {
-            console.log(`Conectado al server en el puerto: ${SERVER_PORT}`);
+        app.listen(process.env.NODE_PORT, () => {
+            console.log(`Conectado al server en el puerto: ${process.env.NODE_PORT}`);
         });
     }
     catch (e)
     {
         console.log(e);
     }
-
-
 })();
 
 

@@ -13,7 +13,9 @@ class SessionMongooseDao{
                 lastName: document?.lastName,
                 email: document?.email,
                 age: document?.age,
-                password: document?.password
+                password: document?.password,
+                role: document?.role,
+                isAdmin: document?.isAdmin
             }
     }
     async collate(password, user){
@@ -30,6 +32,8 @@ class SessionMongooseDao{
                 lastName: document.lastName,
                 email: document.email,
                 age: document.age,
+                role: document.role,
+                isAdmin: document.isAdmin
             }
     }
 }

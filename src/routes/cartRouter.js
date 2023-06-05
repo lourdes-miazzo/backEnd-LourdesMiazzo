@@ -1,14 +1,16 @@
 import { Router } from "express";
 import { gelList, getOne, saveNew, saveProdInCart, deleteProdInCart, deleteAllProdInCart, updateCart, updateProdInCart } from "../controllers/cartsController.js";
+import auth from "../middlewares/auth.js";
+import authorization from "../middlewares/authorization.js";
 
 const cartRouter = Router()
 
-cartRouter.get("/", gelList)
-cartRouter.get("/:id", getOne)
-cartRouter.post("/",saveNew)
-cartRouter.post("/:id/products/:pid", saveProdInCart)
-cartRouter.put("/:id", updateCart)
-cartRouter.put("/:id/products/:pid", updateProdInCart)
-cartRouter.delete("/:id/products/:pid", deleteProdInCart)
-cartRouter.delete("/:id", deleteAllProdInCart)
+cartRouter.get("/", auth, authorization("getCarts"), gelList)
+cartRouter.get("/:id", auth, authorization("getCart"),  getOne)
+cartRouter.post("/", auth, authorization("postCart"),  saveNew)
+cartRouter.post("/:id/products/:pid", auth, authorization("postProdCart"),  saveProdInCart)
+cartRouter.put("/:id", auth, authorization("putcart"),  updateCart)
+cartRouter.put("/:id/products/:pid", auth, authorization("putprodCart"),  updateProdInCart)
+cartRouter.delete("/:id/products/:pid", auth, authorization("deleteProdCart"),  deleteProdInCart)
+cartRouter.delete("/:id", auth, authorization("deleteAllProdCart"),  deleteAllProdInCart)
 export default cartRouter

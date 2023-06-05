@@ -1,28 +1,33 @@
-import ProductMongooseDao from "../../dao/ProductMongooseDao.js"
-
+import ProductMongooseDao from "../../dao/productMongooseDao.js"
+import pidValidation from "../../validations/product/pidValidation.js"
+import createProductValidation from "../../validations/product/createProductValidation.js"
+import updateProductValidation from "../../validations/product/updateproductValidation.js"
 
 class ProductManager{
 
     constructor(){
         this.dao = new ProductMongooseDao()
     }
-    
+
     async findList(category, limit, sort, page){
-            return this.dao.findList(category, limit, sort, page)
+        return this.dao.findList(category, limit, sort, page)
     }
-    async getOne(id){
-            return this.dao.getOne(id)
+    async getOne(pid){
+        await pidValidation.parseAsync(pid)
+        return this.dao.getOne(pid)
     }
     async createNew(body){
-            return this.dao.createNew(body)
+        await createProductValidation.parseAsync(body)
+        return this.dao.createNew(body)
     }
     async updateProd(pid, body){
-            return this.dao.updateProd(pid, body)
+        await updateProductValidation.parseAsync(pid, {...body})
+        return this.dao.updateProd(pid, body)
     }
     async deleteProd(pid){
-            return this.dao.deleteProd(pid)
+        await pidValidation.parseAsync(pid)
+        return this.dao.deleteProd(pid)
     }
-    
 }
 
 export default ProductManager

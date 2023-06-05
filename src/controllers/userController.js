@@ -1,7 +1,5 @@
 import UserManager from "../manager/mongoDB/UserManager.js"
-import idValidation from "../validations/idValidation.js"
-import updateUserValidation from "../validations/updateUserValidation.js"
-import createUserValidation from "../validations/createUserValidation.js"
+import CartManager from "../manager/mongoDB/CartManager.js"
 
 export const allUsers = async (req,res, next)=>{
     try{
@@ -19,8 +17,6 @@ export const allUsers = async (req,res, next)=>{
 }
 export const oneUser = async (req,res, next)=>{
     try{
-        await idValidation.parseAsync(req.params.id)
-        
         const {id} = req.params
 
         const manager = new UserManager()
@@ -34,10 +30,9 @@ export const oneUser = async (req,res, next)=>{
 }
 export const saveNewUser = async (req,res, next)=>{
     try{
-        await createUserValidation.parseAsync(req.body)
-
+        const body = req.body
         const manager = new UserManager()
-        const user = await manager.create(req.body)
+        const user = await manager.create(body)
 
         res.status(201).send({ 
             status: 'success',
@@ -48,9 +43,27 @@ export const saveNewUser = async (req,res, next)=>{
         next(e)
     }
 }
+export const saveCartInUser= async (req,res, next)=>{
+    try{
+        const id = req.params.id
+    
+        const managerCart = new CartManager()
+        const createCart = await managerCart.newCart()
+    
+        const manager = new UserManager()
+        const cartInUser = await manager.saveCartInUser(id, createCart)
+
+        res.status(201).send({
+            message: "Cart created",
+            payload: cartInUser
+        })
+    }
+    catch(e){
+        next(e)
+    }
+}
 export const updateUser = async (req,res, next)=>{
     try{
-        await updateUserValidation.parseAsync({...req.params.id, ...req.body})
         const {id} = req.params
 
         const manager = new UserManager()
@@ -67,7 +80,6 @@ export const updateUser = async (req,res, next)=>{
 }
 export const deleteUser = async (req,res, next)=>{
     try{
-        await idValidation.parseAsync(req.params.id)
         const {id} = req.params
 
         const manager = new UserManager()
