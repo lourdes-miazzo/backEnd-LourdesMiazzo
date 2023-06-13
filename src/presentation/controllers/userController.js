@@ -1,5 +1,5 @@
-import UserManager from "../manager/mongoDB/UserManager.js"
-import CartManager from "../manager/mongoDB/CartManager.js"
+import UserManager from "../../domain/manager/UserManager.js"
+import CartManager from "../../domain/manager/CartManager.js"
 
 export const allUsers = async (req,res, next)=>{
     try{

@@ -1,5 +1,5 @@
 import userModel from "../models/users.model.js"
-import { createHash } from "../shared/index.js"
+import { createHash } from "../../shared/index.js"
 
 class UserMongooseDao{
     async list(limit, page){

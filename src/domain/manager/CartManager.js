@@ -1,8 +1,8 @@
-import CartMongooseDao from "../../dao/CartMongooseDao.js"
-import idValidation from "../../validations/idValidation.js"
-import pidValidation from "../../validations/product/pidValidation.js"
-import productUpdatedIncartValidation from "../../validations/cart/prodUpdatedInCartValidation.js"
-import updateCartValidation from "../../validations/cart/updateCartValidation.js"
+import CartMongooseDao from "../../data/dao/CartMongooseDao.js"
+import idValidation from "../validations/idValidation.js"
+import pidValidation from "../validations/product/pidValidation.js"
+import productUpdatedIncartValidation from "../validations/cart/prodUpdatedInCartValidation.js"
+import updateCartValidation from "../validations/cart/updateCartValidation.js"
 
 class CartManager{
     constructor(){

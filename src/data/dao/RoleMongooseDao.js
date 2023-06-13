@@ -1,4 +1,5 @@
 import roleModel from "../models/role.model.js"
+
 class RoleMongooseDao{
     async findList(){
         const document = await roleModel.find()

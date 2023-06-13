@@ -1,7 +1,7 @@
-import ProductMongooseDao from "../../dao/productMongooseDao.js"
-import pidValidation from "../../validations/product/pidValidation.js"
-import createProductValidation from "../../validations/product/createProductValidation.js"
-import updateProductValidation from "../../validations/product/updateproductValidation.js"
+import ProductMongooseDao from "../../data/dao/ProductMongooseDao.js"
+import pidValidation from "../validations/product/pidValidation.js"
+import createProductValidation from "../validations/product/createProductValidation.js"
+import updateProductValidation from "../validations/product/updateproductValidation.js"
 
 class ProductManager{
 

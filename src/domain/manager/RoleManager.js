@@ -1,7 +1,7 @@
-import RoleMongooseDao from "../../dao/RoleMongooseDao.js";
-import idValidation from "../../validations/idValidation.js";
-import createRoleValidation from "../../validations/role/createRoleValidation.js";
-import updateRoleValidation from "../../validations/role/updateRoleValidation.js";
+import RoleMongooseDao from "../../data/dao/RoleMongooseDao.js";
+import idValidation from "../validations/idValidation.js";
+import createRoleValidation from "../validations/role/createRoleValidation.js";
+import updateRoleValidation from "../validations/role/updateRoleValidation.js";
 
 class RoleManager{
     constructor(){

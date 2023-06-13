@@ -1,7 +1,7 @@
-import SessionMongooseDao from "../../dao/SessionMongooseDao.js";
-import emailValidation from "../../validations/session/emailValidation.js";
-import passValidation from "../../validations/session/passValidation.js";
-import createUserValidation from "../../validations/user/createUserValidation.js";
+import SessionMongooseDao from "../../data/dao/SessionMongooseDao.js"
+import emailValidation from "../validations/session/emailValidation.js";
+import passValidation from "../validations/session/passValidation.js";
+import createUserValidation from "../validations/user/createUserValidation.js";
 
 class SessionManager{
     constructor(){

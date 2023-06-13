@@ -1,14 +1,10 @@
-import express from 'express';
+
 import dotenv from "dotenv"
 dotenv.config()
 import mongoose from 'mongoose';
+import AppFactory from "./presentation/factories/AppFactory.js";
 
-import productRouter from "./routes/productRouter.js"
-import cartRouter from "./routes/cartRouter.js"
-import sessionRouter from './routes/sessionRouter.js'
-import userRouter from './routes/userRouter.js'
-import roleRouter from './routes/roleRouter.js'
-import errorHandler from './middlewares/errorHandler.js'
+
 
 void(async() =>
 {
@@ -19,20 +15,13 @@ void(async() =>
             useUnifiedTopology: true
         }) 
 
-        const app = express();
-        app.use(express.json());
-        app.use(express.urlencoded({ extended: true }));
-        
-        app.use("/api/products", productRouter)
-        app.use("/api/carts", cartRouter)
-        app.use("/api/sessions", sessionRouter)
-        app.use("/api/users", userRouter)
-        app.use("/api/roles", roleRouter)
-        app.use(errorHandler)
-
-        app.listen(process.env.NODE_PORT, () => {
-            console.log(`Conectado al server en el puerto: ${process.env.NODE_PORT}`);
-        });
+        //esta linea de abajo podría ser así: const app= AppFactory.create(process.env.APPLICATION), 
+        //si la dejo vacía como abajo usa la info de static y evito que si APPLICATION dentro de .env 
+        //está vacía o no existe, me tire undefined
+        const app= AppFactory.create() 
+        app.init()
+        app.build()
+        app.listen()
     }
     catch (e)
     {

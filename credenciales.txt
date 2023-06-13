@@ -3,3 +3,9 @@ MONGO_DB_URI= "mongodb+srv://lourdesmiazzo:YjGaKF8OdMQuOzD7@clusterecommerce.z3t
 PRIVATE_KEY = "clav2Ocult1"
 
 NODE_PORT= 8081
+
+APPLICATION=AppExpress
+
+ADMIN_EMAIL= "administrador1@admin.com"
+
+ADMIN_PASSWORD= "abcde"

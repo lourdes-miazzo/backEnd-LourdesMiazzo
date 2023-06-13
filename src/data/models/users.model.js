@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     age: {type: Schema.Types.Number, required: true},
     password: {type: Schema.Types.String, required: true},
     cart: {type: Schema.Types.ObjectId, ref:'carts', index: true},
-    role:{type: Schema.Types.String, default: "client"},
+    role:{type: Schema.Types.String},
     isAdmin: {type: Schema.Types.Boolean, default: false}
 })
 

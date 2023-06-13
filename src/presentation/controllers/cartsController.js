@@ -1,4 +1,4 @@
-import CartManager from "../manager/mongoDB/CartManager.js"
+import CartManager from "../../domain/manager/CartManager.js"
 
 
 export const gelList = async(req,res,next)=>{

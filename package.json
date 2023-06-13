@@ -5,7 +5,8 @@
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon"
+    "start": "nodemon",
+    "command": "node src/command.js"
   },
   "keywords": [],
   "author": "",
@@ -13,11 +14,13 @@
   "type": "module",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "commander": "^10.0.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.4",
     "mongoose-paginate-v2": "^1.7.1",
+    "shelljs": "^0.8.5",
     "zod": "^3.21.4"
   },
   "devDependencies": {

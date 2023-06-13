@@ -1,4 +1,4 @@
-import RoleManager from "../manager/mongoDB/RoleManager.js"
+import RoleManager from "../../domain/manager/RoleManager.js"
 
 export const list= async(req, res,next)=>{
     try{

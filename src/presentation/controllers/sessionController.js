@@ -1,5 +1,5 @@
-import SessionManager from "../manager/mongoDB/SessionManager.js"
-import { generateToken } from "../shared/index.js"
+import SessionManager from "../../domain/manager/SessionManager.js"
+import { generateToken } from "../../shared/index.js"
 
 export const login= async (req,res, next)=>{
     try{

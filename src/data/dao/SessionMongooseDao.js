@@ -1,5 +1,5 @@
 import userModel from "../models/users.model.js";
-import { passwordsCompare, createHash } from "../shared/index.js";
+import { passwordsCompare, createHash } from "../../shared/index.js";
 
 class SessionMongooseDao{
     async getOneByEmail(email){

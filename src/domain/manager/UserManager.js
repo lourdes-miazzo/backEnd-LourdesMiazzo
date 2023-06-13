@@ -1,7 +1,7 @@
-import UserMongooseDao from "../../dao/UserMongooseDao.js"
-import idValidation from "../../validations/idValidation.js"
-import createUserValidation from "../../validations/user/createUserValidation.js"
-import updateUserValidation from "../../validations/user/updateUserValidation.js"
+import UserMongooseDao from "../../data/dao/UserMongooseDao.js"
+import idValidation from "../validations/idValidation.js"
+import createUserValidation from "../validations/user/createUserValidation.js"
+import updateUserValidation from "../validations/user/updateUserValidation.js"
 
 class UserManager{
     constructor(){
