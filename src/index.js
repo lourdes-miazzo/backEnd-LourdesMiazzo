@@ -1,7 +1,6 @@
-
 import dotenv from "dotenv"
-dotenv.config()
-import mongoose from 'mongoose';
+dotenv.config();
+import DbFactory from "./data/factories/DbFactory.js"
 import AppFactory from "./presentation/factories/AppFactory.js";
 
 
@@ -10,15 +9,10 @@ void(async() =>
 {
     try
     {
-        await mongoose.connect(process.env.MONGO_DB_URI, {
-            useNewUrlParser:true,
-            useUnifiedTopology: true
-        }) 
+        const db = DbFactory.create(process.env.DB)
+        db.init(process.env.DB_URI)
 
-        //esta linea de abajo podría ser así: const app= AppFactory.create(process.env.APPLICATION), 
-        //si la dejo vacía como abajo usa la info de static y evito que si APPLICATION dentro de .env 
-        //está vacía o no existe, me tire undefined
-        const app= AppFactory.create() 
+        const app= AppFactory.create(process.env.PAYLOAD) 
         app.init()
         app.build()
         app.listen()

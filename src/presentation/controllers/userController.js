@@ -1,5 +1,4 @@
 import UserManager from "../../domain/manager/UserManager.js"
-import CartManager from "../../domain/manager/CartManager.js"
 
 export const allUsers = async (req,res, next)=>{
     try{
@@ -31,6 +30,7 @@ export const oneUser = async (req,res, next)=>{
 export const saveNewUser = async (req,res, next)=>{
     try{
         const body = req.body
+
         const manager = new UserManager()
         const user = await manager.create(body)
 

@@ -1,9 +1,11 @@
-import { productsModel } from "../models/products.models.js"
+import { productModel } from "../models/productModels.js"
+import Product from "../../domain/entities/product.js"
 
-class ProductMongooseDao{
+class ProductMongooseRepository{
     async findList(category, limit, sort, page){
-        const document = await productsModel.paginate(category, {limit, page, sort: {price: sort} })
-        document.docs= document.docs.map(doc=>({
+        const prodDoc = await productModel.paginate(category, {limit, page, sort: {price: sort} })
+        const { docs, ...pagination } = prodDoc;
+        const products=  docs.map(doc=>new Product({
             id: doc._id,
             title: doc.title,
             description: doc.description,
@@ -14,11 +16,14 @@ class ProductMongooseDao{
             category: doc.category,
             status: doc.status,
         }))
-        return document
+        return {
+            products,
+            pagination
+        }
     }
     async getOne(pid){
-        const document = await productsModel.findById(pid)
-        return {
+        const document = await productModel.findById(pid)
+        return new Product({
             id: document._id,
             title: document.title,
             description: document.description,
@@ -28,11 +33,11 @@ class ProductMongooseDao{
             stock: document.stock,
             category: document.category,
             status: document.status,
-        }
+        })
     }
     async createNew(body){
-        const document = await productsModel.create(body)
-        return {
+        const document = await productModel.create(body)
+        return new Product({
             id: document._id,
             title: document.title,
             description: document.description,
@@ -42,12 +47,12 @@ class ProductMongooseDao{
             stock: document.stock,
             category: document.category,
             status: document.status,
-        }
+        })
     }
     async updateProd(pid, body){
-        const document = await productsModel.updateOne({_id: pid}, body)
-        const docUpdated = await productsModel.findById({_id: pid})
-        return {
+        await productModel.updateOne({_id: pid}, body, {new: true})
+        const docUpdated= await productModel.findById(pid)
+        return new Product({
             id: docUpdated._id,
             title: docUpdated.title,
             description: docUpdated.description,
@@ -57,12 +62,11 @@ class ProductMongooseDao{
             stock: docUpdated.stock,
             category: docUpdated.category,
             status: docUpdated.status,
-        }
+        })
     }
     async deleteProd(pid){
-        const document = await productsModel.updateOne({_id: pid},  {status: false})
-        
+        const document = await productModel.updateOne({_id: pid},  {status: false})
     }
 }
 
-export default ProductMongooseDao
+export default ProductMongooseRepository

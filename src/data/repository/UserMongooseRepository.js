@@ -1,10 +1,13 @@
-import userModel from "../models/users.model.js"
+import userModel from "../models/userModel.js"
 import { createHash } from "../../shared/index.js"
+import User from "../../domain/entities/user.js"
 
-class UserMongooseDao{
+class UserMongooseRepository{
     async list(limit, page){
             const document = await userModel.paginate({}, {limit, page})
-            document.docs = document.docs.map(d => ({
+            const { docs, ...pagination } = document
+
+            const users = docs.map(d => new User({
                 id: d._id,
                 firstName: d.firstName,
                 lastName: d.lastName,
@@ -12,16 +15,19 @@ class UserMongooseDao{
                 age: d.age, 
                 cart: d.cart,
                 role: d.role,
-                isAdmin: d.isAdmin
+                isAdmin: d.isAdmin,
+                cart: d.cart
             }))
-            return document
+            return {
+                users, pagination
+            }
     }
     async getOne(id){
             const document = await userModel.findOne({_id: id})
             if(!document){
                 throw new Error ("User not found")
             }
-            return {
+            return new User({
                 id: document?._id,
                 firstName: document?.firstName,
                 lastName: document?.lastName,
@@ -30,13 +36,13 @@ class UserMongooseDao{
                 cart: document?.cart,
                 role: document?.role,
                 isAdmin: document?.isAdmin
-            }
+            })
     }
     async create(body){
         const hashedPassword = await createHash(body)
         const userHashed = {...body, password : hashedPassword}
         const document = await userModel.create(userHashed)
-            return {
+            return new User({
                 id: document._id,
                 firstName: document.firstName,
                 lastName: document.lastName,
@@ -45,15 +51,15 @@ class UserMongooseDao{
                 cart: document.cart,
                 role: document.role,
                 isAdmin: document.isAdmin
-            }
+            })
     }
     async saveCartInUser(id, createCart){
-        const user = await userModel.findById(id)
+        await userModel.findById(id)
         const document = await userModel.findOneAndUpdate(
             {_id: id},
             {cart: createCart.id},
             {new:true})
-            return {
+            return new User({
                 id: document._id,
                 firstName: document.firstName,
                 lastName: document.lastName,
@@ -62,14 +68,14 @@ class UserMongooseDao{
                 cart: document.cart,
                 role: document.role,
                 isAdmin: document.isAdmin
-            }  
+            })
     }
     async updateOne(id, body){
             const document = await userModel.findOneAndUpdate(
                 {_id: id},
                     body,
                 {new: true})
-            return {
+            return new User({
                 id: document._id,
                 firstName: document.firstName,
                 lastName: document.lastName,
@@ -78,11 +84,11 @@ class UserMongooseDao{
                 cart: document.cart,
                 role: document.role,
                 isAdmin: document.isAdmin
-            }     
+            })
     }
     async deleteOne(id){
-            return userModel.deleteOne({_id: id})
+            await userModel.deleteOne({_id: id})
     }
 }
 
-export default UserMongooseDao
+export default UserMongooseRepository

@@ -6,7 +6,7 @@ const createUserValidation= z.object({
     email: z.string().email(),
     age: z.number(),
     password: z.string(), 
-    cart: z.string().length(24).optional(),
+    
     role: z.array(z.string()).optional(),
     isAdmin: z.boolean().optional()
 })

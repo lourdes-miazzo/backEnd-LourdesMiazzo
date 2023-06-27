@@ -1,11 +1,19 @@
-MONGO_DB_URI= "mongodb+srv://lourdesmiazzo:YjGaKF8OdMQuOzD7@clusterecommerce.z3tscrp.mongodb.net/ecommerce"
+DB_URI= "mongodb+srv://lourdesmiazzo:YjGaKF8OdMQuOzD7@clusterecommerce.z3tscrp.mongodb.net/ecommerce"
+
+DB = "MongooseAdapter"
+
+PAYLOAD = "AppExpress"
 
 PRIVATE_KEY = "clav2Ocult1"
 
 NODE_PORT= 8081
 
-APPLICATION=AppExpress
+APPLICATION= "AppExpress"
 
 ADMIN_EMAIL= "administrador1@admin.com"
 
 ADMIN_PASSWORD= "abcde"
+
+SMTP_KEY = "vshakclnewzrikjt"
+
+SMTP_EMAIL = "lourdesmiazzo@gmail.com"

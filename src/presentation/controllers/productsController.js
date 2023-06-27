@@ -1,8 +1,8 @@
 import ProductManager from "../../domain/manager/ProductManager.js"
+import { v4 as uuidv4 } from 'uuid'
 
 export const getList = async(req,res,next)=>{
     try{
-        const manager = new ProductManager()
         let cat = req.query.cat 
         let limit = req.query.limit ? +req.query.limit : 10 
         let sort = req.query.sort ? +req.query.sort : undefined
@@ -13,13 +13,14 @@ export const getList = async(req,res,next)=>{
         category = {category: cat};
         }
 
+        const manager = new ProductManager()
         let result= await manager.findList(category, limit, sort, page)
 
         res.status(200).send({
-            result: "success", 
-            message: `Products found`, 
-            payload: result   
-        })
+            status: 'success',
+            message: 'All products found',
+            products: result.docs, ...result,
+            docs: undefined });
     }
     catch(error){
             next(e)
@@ -29,8 +30,7 @@ export const getList = async(req,res,next)=>{
 
 export const getOne =async(req,res,next)=>{
     try{
-        const {pid} = req.params
-
+        const pid = req.params.pid
         const manager = new ProductManager()
         let findOneProd=  await manager.getOne(pid)
 
@@ -47,7 +47,8 @@ export const getOne =async(req,res,next)=>{
 export const saveNew=async (req,res,next)=>{
     try {
         const body = req.body
-
+        body.code = uuidv4()
+        
         const manager = new ProductManager()
         const result = await manager.createNew(body)
 

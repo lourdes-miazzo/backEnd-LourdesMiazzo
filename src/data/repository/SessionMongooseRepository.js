@@ -1,13 +1,14 @@
-import userModel from "../models/users.model.js";
+import userModel from "../models/userModel.js";
 import { passwordsCompare, createHash } from "../../shared/index.js";
+import User from '../../domain/entities/user.js'
 
-class SessionMongooseDao{
+class SessionMongooseRepository{
     async getOneByEmail(email){
             const document = await userModel.findOne({email})
             if(!document){
                 throw new Error("User dont exist")
             }
-            return {
+            return new User({
                 id: document?._id,
                 firstName: document?.firstName,
                 lastName: document?.lastName,
@@ -15,27 +16,31 @@ class SessionMongooseDao{
                 age: document?.age,
                 password: document?.password,
                 role: document?.role,
-                isAdmin: document?.isAdmin
-            }
+                isAdmin: document?.isAdmin, 
+                cart: document?.cart
+            })
     }
     async collate(password, user){
             return passwordsCompare(password, user)
     }
-    async create(body){
+    async create(body, cartAssociated){
+        body.cart = cartAssociated.id
+        console.log(body)
             const hashedPassword = await createHash(body)
             const userHashed = {...body, password : hashedPassword}
             const document = await userModel.create(userHashed)
 
-            return {
+            return new User({
                 id: document._id,
                 firstName: document.firstName,
                 lastName: document.lastName,
                 email: document.email,
                 age: document.age,
                 role: document.role,
-                isAdmin: document.isAdmin
-            }
+                isAdmin: document.isAdmin,
+                cart: document.cart
+            })
     }
 }
 
-export default SessionMongooseDao
+export default SessionMongooseRepository

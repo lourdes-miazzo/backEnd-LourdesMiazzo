@@ -1,3 +1,4 @@
+import CartManager from "../../domain/manager/CartManager.js"
 import SessionManager from "../../domain/manager/SessionManager.js"
 import { generateToken } from "../../shared/index.js"
 
@@ -49,14 +50,17 @@ export const current = async(req, res, next)=>{
 export const signup= async (req,res, next)=>{
     try{
         const body= req.body
-        const manager = new SessionManager()
-        const user = await manager.create(body)
+        const cart = new CartManager()
+        const cartAssociated = await cart.newCart()
 
+        const manager = new SessionManager()
+        const user = await manager.create(body, cartAssociated)
+      
         res.status(201).send({ 
             status: 'success', 
             message: 'User created.',
-            payload: user })
-        
+            payload: user }) 
+    
     }
     catch(e){
         next(e)

@@ -1,23 +1,23 @@
-import SessionMongooseDao from "../../data/dao/SessionMongooseDao.js"
+import container from "../../container.js";
 import emailValidation from "../validations/session/emailValidation.js";
 import passValidation from "../validations/session/passValidation.js";
 import createUserValidation from "../validations/user/createUserValidation.js";
 
 class SessionManager{
     constructor(){
-        this.dao = new SessionMongooseDao()
+        this.repository = container.resolve('SessionRepository')
     }
         async getOneByEmail(email){
             await emailValidation.parseAsync(email)
-            return this.dao.getOneByEmail(email)
+            return this.repository.getOneByEmail(email)
         }
         async collate(password, user){
             await passValidation.parseAsync(password)
-            return this.dao.collate(password, user)
+            return this.repository.collate(password, user)
         }
-        async create(body){
+        async create(body, cartAssociated){
             await createUserValidation.parseAsync(body)
-            return this.dao.create(body)
+            return this.repository.create(body, cartAssociated)
         }
 }
     export default SessionManager

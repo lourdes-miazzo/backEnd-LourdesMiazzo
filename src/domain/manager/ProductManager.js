@@ -1,4 +1,4 @@
-import ProductMongooseDao from "../../data/dao/ProductMongooseDao.js"
+import container from "../../container.js"
 import pidValidation from "../validations/product/pidValidation.js"
 import createProductValidation from "../validations/product/createProductValidation.js"
 import updateProductValidation from "../validations/product/updateproductValidation.js"
@@ -6,27 +6,27 @@ import updateProductValidation from "../validations/product/updateproductValidat
 class ProductManager{
 
     constructor(){
-        this.dao = new ProductMongooseDao()
+        this.repository = container.resolve('ProductRepository')
     }
 
     async findList(category, limit, sort, page){
-        return this.dao.findList(category, limit, sort, page)
+        return this.repository.findList(category, limit, sort, page)
     }
     async getOne(pid){
         await pidValidation.parseAsync(pid)
-        return this.dao.getOne(pid)
+        return this.repository.getOne(pid)
     }
     async createNew(body){
         await createProductValidation.parseAsync(body)
-        return this.dao.createNew(body)
+        return this.repository.createNew(body)
     }
     async updateProd(pid, body){
         await updateProductValidation.parseAsync(pid, {...body})
-        return this.dao.updateProd(pid, body)
+        return this.repository.updateProd(pid, body)
     }
     async deleteProd(pid){
         await pidValidation.parseAsync(pid)
-        return this.dao.deleteProd(pid)
+        return this.repository.deleteProd(pid)
     }
 }
 

@@ -1,9 +1,10 @@
-import roleModel from "../models/role.model.js"
+import roleModel from "../models/roleModel.js"
+import Role from '../../domain/entities/role.js'
 
-class RoleMongooseDao{
+class RoleMongooseRepository{
     async findList(){
         const document = await roleModel.find()
-        document.map(doc=>({
+        document.map(doc=> new Role({
             id: doc._id,
             name: doc.name,
             permissions: doc.permissions
@@ -12,19 +13,19 @@ class RoleMongooseDao{
     }
     async oneRole(id){
         const document = await roleModel.findOne({_id: id})
-        return{
+        return new Role({
             id: document?._id,
             name: document?.name,
             permissions: document?.permissions
-        }
+        })
     }
     async createRole(body){
         const document = await roleModel.create(body)
-        return{
+        return new Role({
             id: document._id,
             name: document.name,
             permissions: document.permissions
-        }
+        })
     }
     async roleUpdated(id, body){
         const document= await roleModel.findOneAndUpdate(
@@ -32,20 +33,15 @@ class RoleMongooseDao{
             body,
             {new: true}
         )
-        return{
+        return new Role({
             id: document._id,
             name: document.name,
             permissions: document.permissions
-        }
+        })
     }
     async eraseRole(id){
         const document= await roleModel.findOneAndDelete({_id: id})
-        return{
-            id: document._id,
-            name: document.name,
-            permissions: document.permissions
-        }
     }
 }
 
-export default RoleMongooseDao
+export default RoleMongooseRepository
