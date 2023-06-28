@@ -63,7 +63,7 @@ export const saveProdInCart = async (req, res,next) => {
         try {
             const id = req.params.id
             const pid= req.params.pid
-            
+
             const manager= new CartManager()
             const prodInCart= await manager.addProd(id, pid)
 
@@ -78,85 +78,85 @@ export const saveProdInCart = async (req, res,next) => {
 }
 export const purchaseProductsInCart= async(req,res,next)=>{
     try{
-        const id = req.params.id
-    
-        const product = new ProductManager()
-        const manager= new CartManager()
-        //ver que prod están en cart
-        const getProdInCart= await manager.purchaseProd(id)
-        const prodInCartInfo = getProdInCart.products
-
-        let amount = 0
-        let noStockArray = []
-        //obtener info completa de cada prod para obtener el precio y poder multiplicarlo por la cantidad,
-        //así recupero el valor final total, 
-        for (let index = 0; index < prodInCartInfo.length; index++) {
-            let idProd = prodInCartInfo[index].id
-            let quantityProd = prodInCartInfo[index].quantity
-            let completeProductInfo = await product.getOne(idProd)
-
-            const stockControl = completeProductInfo.stock - prodInCartInfo[index].quantity
-
-            //si un prod no tiene stock suficiente no se suma y su id se guarda en un array
-            if(stockControl < 0){
-                let noStockcompleteProd= {id: idProd, quantity: quantityProd}
-                noStockArray.push(noStockcompleteProd)
-                continue
-            } 
-            //si en cambio hay suficiente stock se guarda en el producto el stock modificado
-            let dto= {
-                ...completeProductInfo, 
-                stock: stockControl
-            }
-            const prodModific = await product.updateProd(idProd, dto)
-
-            let subTotal = completeProductInfo.price * prodInCartInfo[index].quantity
-            amount += subTotal 
-
-        } 
-        //se arma la info del ticket para enviar y crear ticket en db
-        const dtoTicket = {
-            purchaseDatetime: new Date().toLocaleString('es-AR', {timeZone: 'America/Argentina/Buenos_Aires'}),
-            amount: amount,
-            purchaser: req.user.email
-        }
-        dtoTicket.code = uuidv4()
+            const id = req.params.id
         
-        const ticket = new TicketManager()
-        const newTicket = await ticket.createNewTicket(dtoTicket)
+            const product = new ProductManager()
+            const manager= new CartManager()
+            //ver que prod están en cart
+            const getProdInCart= await manager.purchaseProd(id)
+            const prodInCartInfo = getProdInCart.products
 
-        //se envia al mail del comprador la info del ticket
-        const ticketString = JSON.stringify(newTicket, null, 2)
-        const mailContent= mailTicketTemplate(ticketString)
-        const mail= {
-            from : "lourdesmiazzo@gmail.com",
-            to: req.user.email,
-            subject: "Ticket de compra",
-            html: mailContent,
-            attachments: [{
-                filename: 'iconoLourdes.png',
-                path: resolverPath + "/iconoLourdes.png",
-                cid: '1'
-            }]        
-        }
+            let amount = 0
+            let noStockArray = []
+            //obtener info completa de cada prod para obtener el precio y poder multiplicarlo por la cantidad,
+            //así recupero el valor final total, 
+            for (let index = 0; index < prodInCartInfo.length; index++) {
+                let idProd = prodInCartInfo[index].id
+                let quantityProd = prodInCartInfo[index].quantity
+                let completeProductInfo = await product.getOne(idProd)
 
-        await transport.sendMail(mail)
+                const stockControl = completeProductInfo.stock - quantityProd
 
-        //si hay productos que no se pudieron comprar por falta de stock se envia esta respuesta
-        if(noStockArray.length > 0){
+                //si un prod no tiene stock suficiente no se suma y su id se guarda en un array
+                if(stockControl < 0){
+                    noStockArray.push({id: idProd, quantity: quantityProd})
+                    continue
+                } 
+
+                //si en cambio hay suficiente stock se guarda en el producto el stock modificado
+                let dto= {
+                    ...completeProductInfo, 
+                    stock: stockControl
+                }
+                const prodModific = await product.updateProd(idProd, dto)
+
+                let subTotal = completeProductInfo.price * prodInCartInfo[index].quantity
+                amount += subTotal 
+            } 
+
+            //se arma la info del ticket para enviar y crear ticket en db
+            const dtoTicket = {
+                purchaseDateTime: new Date().toLocaleString('es-AR', {timeZone: 'America/Argentina/Buenos_Aires'}),
+                amount: amount,
+                purchaser: req.user.email
+            }
+            dtoTicket.code = uuidv4()
             
-            return res.status(201).send({
-                message: "Not all product were purchased",
-                Ticket: newTicket,
-                productsStillInCart: noStockArray
-            })
-        }
+            const ticket = new TicketManager()
+            const newTicket = await ticket.createNewTicket(dtoTicket)
 
-        //si todos los prod se pudieron comprar se envía esta
-        res.status(201).send({
-            message: "Products purchased successfully",
-            Ticket: newTicket
-        }) 
+            //se envia al mail del comprador la info del ticket
+            const ticketString = JSON.stringify(newTicket, null, 2)
+            const mailContent= mailTicketTemplate(ticketString)
+            const mail= {
+                from : "lourdesmiazzo@gmail.com",
+                to: req.user.email,
+                subject: "Ticket de compra",
+                html: mailContent,
+                attachments: [{
+                    filename: 'iconoLourdes.png',
+                    path: resolverPath + "/iconoLourdes.png",
+                    cid: '1'
+                }]        
+            }
+            await transport.sendMail(mail)
+
+            
+            await manager.deleteAllInsideCart(id)
+            //si hay productos que no se pudieron comprar por falta de stock se envia esta respuesta
+            if(noStockArray.length > 0){
+                return res.status(201).send({
+                    message: "Not all product were purchased",
+                    Ticket: newTicket,
+                    productsWithNoStockEnough: noStockArray
+                })
+            }
+
+            //si todos los prod se pudieron comprar se envía esta
+            res.status(201).send({
+                message: "Products purchased successfully",
+                Ticket: newTicket
+            }) 
     }
     catch(e){
         next(e)
@@ -222,7 +222,7 @@ export const updateProdInCart = async (req,res,next)=>{
         const updateOneProd=  await manager.oneProdUpdated(id, pid, body)
         
         if(!updateOneProd){
-            res.status(200).send({
+            res.status(400).send({
                 message: "you don't have the product you want to update"})
         }else{
             res.status(200).send({

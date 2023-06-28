@@ -25,7 +25,6 @@ class SessionMongooseRepository{
     }
     async create(body, cartAssociated){
         body.cart = cartAssociated.id
-        console.log(body)
             const hashedPassword = await createHash(body)
             const userHashed = {...body, password : hashedPassword}
             const document = await userModel.create(userHashed)

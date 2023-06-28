@@ -61,7 +61,7 @@ class CartMongooseRepository{
                 id: document._id,
                 products: document.products.map(item => {
                     return {
-                        _id: item._id,
+                        id: item._id,
                         quantity: item.quantity
                     }
                 })
@@ -94,16 +94,16 @@ class CartMongooseRepository{
     async productsUpdated(id, body){
         const document= await cartModel.findOneAndUpdate(
             {_id: id}, 
-            {$set: {products: body}},
+            { $set: { products: body }},
             {new: true})
             return new Cart({
                 id: document._id,
                 products: document.products.map(item => {
                     return {
-                        _id: item._id,
+                        id: item.id,
                         quantity: item.quantity
                     }
-                })
+                }) 
             })
     }
     async oneProdUpdated(id, pid, body){

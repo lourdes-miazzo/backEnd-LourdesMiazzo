@@ -2,7 +2,7 @@
 class Ticket{
     constructor(props){
         this.code= props.code;
-        this.purchaseDatetime=props.purchaseDatetime;
+        this.purchaseDateTime=props.purchaseDateTime;
         this.amount= props.amount;
         this.purchaser= props.purchaser
     }
