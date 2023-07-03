@@ -65,13 +65,24 @@ export const saveProdInCart = async (req, res,next) => {
             const pid= req.params.pid
 
             const manager= new CartManager()
-            const prodInCart= await manager.addProd(id, pid)
+            const cart= await manager.getOneCart(id) 
 
+            const product= new ProductManager()
+            const prod= await product.getOne(pid)
+
+            const existingProduct= cart.products.find(item=> item.id===pid)
+
+            if(existingProduct && existingProduct.quantity >= prod.stock){
+                return res.status(400).send({
+                        result: "failure", 
+                        message: `Product ${pid} cannot be added in cart ${id} for stock lacking`,
+                        payload: cart})
+            }
+            const prodQuantityUpdated = await manager.addProd(id, pid)
             res.status(200).send({
                 result: "success", 
                 message: `Product ${pid} added in cart ${id}`,
-                payload:prodInCart})
-        
+                payload:prodQuantityUpdated})
         } catch (e) {
             next(e)
         }
@@ -87,7 +98,6 @@ export const purchaseProductsInCart= async(req,res,next)=>{
             const prodInCartInfo = getProdInCart.products
 
             let amount = 0
-            let noStockArray = []
             //obtener info completa de cada prod para obtener el precio y poder multiplicarlo por la cantidad,
             //así recupero el valor final total, 
             for (let index = 0; index < prodInCartInfo.length; index++) {
@@ -97,9 +107,8 @@ export const purchaseProductsInCart= async(req,res,next)=>{
 
                 const stockControl = completeProductInfo.stock - quantityProd
 
-                //si un prod no tiene stock suficiente no se suma y su id se guarda en un array
+                //si un prod no tiene stock suficiente no se suma 
                 if(stockControl < 0){
-                    noStockArray.push({id: idProd, quantity: quantityProd})
                     continue
                 } 
 
@@ -110,7 +119,7 @@ export const purchaseProductsInCart= async(req,res,next)=>{
                 }
                 const prodModific = await product.updateProd(idProd, dto)
 
-                let subTotal = completeProductInfo.price * prodInCartInfo[index].quantity
+                let subTotal = completeProductInfo.price * quantityProd
                 amount += subTotal 
             } 
 
@@ -140,19 +149,9 @@ export const purchaseProductsInCart= async(req,res,next)=>{
                 }]        
             }
             await transport.sendMail(mail)
-
-            
+            //se borra todo dentro de carts
             await manager.deleteAllInsideCart(id)
-            //si hay productos que no se pudieron comprar por falta de stock se envia esta respuesta
-            if(noStockArray.length > 0){
-                return res.status(201).send({
-                    message: "Not all product were purchased",
-                    Ticket: newTicket,
-                    productsWithNoStockEnough: noStockArray
-                })
-            }
-
-            //si todos los prod se pudieron comprar se envía esta
+            
             res.status(201).send({
                 message: "Products purchased successfully",
                 Ticket: newTicket
@@ -200,14 +199,29 @@ export const updateCart= async (req,res,next)=>{
     try{
         const {id} = req.params
         const body= req.body
+        const product = new ProductManager()
+
+        console.log(body)
+        let arrayProd= []
+        //acá se controla que en el carrito que se hace el update no se agreguen
+        // prod q no tienen el stock suficiente
+        for (let index = 0; index < body.length; index++) {
+            const quantity = body[index].quantity;
+            const idProd= body[index]._id
+            const prodInfo= await product.getOne(idProd)
+
+            if(prodInfo.stock >= quantity){
+                arrayProd.push({_id: idProd, quantity: quantity})
+            }
+        }
 
         const manager= new CartManager()
-        const updateProds= await manager.productsUpdated(id, body)
+        const updateProds= await manager.productsUpdated(id, arrayProd)
 
         res.status(200).send({
             result: "success", 
             message: `Cart ${id} updated`,
-            payload: updateProds})
+            payload: updateProds}) 
     }catch (e) {
         next(e)
         }
@@ -219,17 +233,20 @@ export const updateProdInCart = async (req,res,next)=>{
         const body = req.body
 
         const manager= new CartManager()
-        const updateOneProd=  await manager.oneProdUpdated(id, pid, body)
-        
-        if(!updateOneProd){
-            res.status(400).send({
-                message: "you don't have the product you want to update"})
-        }else{
-            res.status(200).send({
-                result: "success", 
-                message: `Product ${pid} updated in cart ${id}`,
-                payload: updateOneProd})
-        }
+        const product = new ProductManager()
+        const prodInfo= await product.getOne(pid)
+        if(prodInfo.stock >=body.quantity){
+            const updateOneProd=  await manager.oneProdUpdated(id, pid, body)
+        return res.status(200).send({
+                    result: "success", 
+                    message: `Product ${pid} updated in cart ${id}`,
+                    payload: updateOneProd})
+        } 
+        const cart= await manager.getOneCart(id)
+        res.status(400).send({
+            result: "failure", 
+            message: `Product ${pid} cannot be updated in cart ${id} for stock lacking`,
+            payload: cart})
     }catch (e) {
         next(e)
         }
