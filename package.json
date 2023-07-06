@@ -4,7 +4,7 @@
   "description": "",
   "main": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha src/tests/*.test.js",
     "start": "nodemon",
     "command": "node src/command.js"
   },
@@ -13,6 +13,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "awilix": "^8.0.1",
     "bcrypt": "^5.1.0",
     "commander": "^10.0.1",
@@ -28,6 +29,9 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.22",
+    "supertest": "^6.3.3"
   }
 }

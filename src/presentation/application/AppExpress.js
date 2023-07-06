@@ -28,6 +28,12 @@ class AppExpress{
             console.log(`Conectado al server en el puerto: ${process.env.NODE_PORT}`);
         });
     }
+    callback(){
+        return this.app
+    }
+    close(){
+        this.server.close()
+    }
 }
 
 export default AppExpress
