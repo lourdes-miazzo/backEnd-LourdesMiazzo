@@ -22,7 +22,7 @@ export const getList = async(req,res,next)=>{
             products: result.docs, ...result,
             docs: undefined });
     }
-    catch(error){
+    catch(e){
             next(e)
     }
 }
@@ -39,7 +39,7 @@ export const getOne =async(req,res,next)=>{
             message: `Product with Id: ${pid} found`, 
             payload: findOneProd})
     }
-    catch(error){
+    catch(e){
         next(e)
     }
 }
@@ -57,7 +57,7 @@ export const saveNew=async (req,res,next)=>{
             message: `New product created`, 
             payload: result});
     }
-    catch (error) {
+    catch (e) {
         next(e)
     }
 }
@@ -75,7 +75,7 @@ export const update = async (req, res,next)=>{
             message: `Product updated`, 
             payload: updateProd})
     }
-    catch(error){
+    catch(e){
         next(e)
     }  
 }
@@ -93,7 +93,7 @@ export const deleteOne = async(req,res,next)=>{
             message: `Product deleted`, 
             payload: deleteProd})
     }
-    catch(error){
+    catch(e){
         next(e)
     }
 }

@@ -107,7 +107,7 @@ export const purchaseProductsInCart= async(req,res,next)=>{
 
                 const stockControl = completeProductInfo.stock - quantityProd
 
-                //si un prod no tiene stock suficiente no se suma 
+                //si un prod no tiene stock suficiente no se suma y arranca un nuevo ciclo for
                 if(stockControl < 0){
                     continue
                 } 

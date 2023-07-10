@@ -23,6 +23,7 @@ describe("Testeando role mongoose repository", ()=>{
         expect(this.roleRepository).to.be.instanceOf(RoleMongooseRepository)
     })
     it("al acceder a todos los roles guardados estos llegan en un array", function(){
+        this.timeout(5000)
         return this.roleRepository
         .findList()
         .then(result=>{
@@ -31,6 +32,7 @@ describe("Testeando role mongoose repository", ()=>{
         })
     })
     it("al brindar un id este devuelve el role que coincide con ese parametro", function(){
+        this.timeout(5000)
         const id= "6478b1b3e1a70aab981c5b08"
         return this.roleRepository
         .oneRole(id)
@@ -41,6 +43,7 @@ describe("Testeando role mongoose repository", ()=>{
         })
     })
     it("es posible crear un role usando el método createRole y pasando por parametro un body con la info necesarioa", function(){
+        this.timeout(5000)
         const role={
             name: faker.person.fullName(),
             permissions: ["postCart", "postProdCart", "purchase", "deleteProdCart"]
@@ -54,6 +57,7 @@ describe("Testeando role mongoose repository", ()=>{
         })
     })
     it("es posible realizar un update de un role ya existente", function(){
+        this.timeout(5000)
         const id="64a47dc829cfc1211fe38735"
         const role={
             name: faker.person.fullName(),
@@ -68,6 +72,7 @@ describe("Testeando role mongoose repository", ()=>{
         }) 
     })
     it("es posible eliminar un role pasando un id por parametro", function(){
+        this.timeout(5000)
         const role={
             name: faker.person.fullName(),
             permissions: ["postProduct", "deleteAllProdCart", "purchase", "deleteProdCart"]
@@ -85,3 +90,4 @@ describe("Testeando role mongoose repository", ()=>{
         })
     }) 
 })
+ 

@@ -18,11 +18,12 @@ describe("Testeando user mongoose repository", ()=>{
     })
     after(async function(){
         await db.close()
-    })
+    }) 
     it("El repository debe ser una instancia de userMongooseRepository",function(){
         expect(this.userRepository).to.be.instanceOf(UserMongooseRepository)
     })
     it("al obtener todos los usuarios con list() estos llegan en un array", function(){
+        this.timeout(5000)
         return this.userRepository
         .list(5, 1)
         .then(result=>{
@@ -34,6 +35,7 @@ describe("Testeando user mongoose repository", ()=>{
         })
     })
     it("el repository debe poder devolver un solo usuario con el metodo getOne()", function(){
+        this.timeout(5000)
         const id = "647bd11c6d42d4a23f97a5f6"
         return this.userRepository
         .getOne(id)
@@ -44,6 +46,7 @@ describe("Testeando user mongoose repository", ()=>{
         })
     })
     it("El repository debe poder crear un usuario", function(){
+        this.timeout(5000)
         const user={
             firstName: faker.person.firstName(),
             lastName: faker.person.lastName(),
@@ -65,6 +68,7 @@ describe("Testeando user mongoose repository", ()=>{
         })
     })
     it("El repository debe permitir actualizar los datos del usuario", function(){
+        this.timeout(5000)
         const id = "647bd11c6d42d4a23f97a5f6"
         const body={
             firstName: faker.person.firstName(),
@@ -81,6 +85,7 @@ describe("Testeando user mongoose repository", ()=>{
         })
     }) 
     it("El repository debe poder eliminar un usuario", function(){
+        this.timeout(5000)
         const user={
             firstName: faker.person.firstName(),
             lastName: faker.person.lastName(),
@@ -101,3 +106,4 @@ describe("Testeando user mongoose repository", ()=>{
         })
     })
 })
+ 

@@ -11,7 +11,7 @@ export const passwordsCompare = async(password, user)=>{
     return await bcrypt.compare(password, user.password)
 }
 export const generateToken = async(user)=>{
-    return jwt.sign({user: {...user, password: undefined}}, process.env.PRIVATE_KEY, {expiresIn: "2m"})
+    return jwt.sign({user: {...user, password: undefined}}, process.env.PRIVATE_KEY, {expiresIn: "8m"})
 }
 
 export const transport= nodemailer.createTransport({

@@ -28,7 +28,7 @@ export const login= async (req,res, next)=>{
         res.cookie("accessToken", accessToken, {
             maxAge: 60*60*100,
             httpOnly: true
-        }).send({message: 'Login success!', accessToken})
+        }).status(200).send({message: 'Login success!', accessToken})
         }
         catch(e){
             next(e)
