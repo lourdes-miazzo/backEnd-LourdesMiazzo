@@ -19,5 +19,10 @@ class SessionManager{
             await createUserValidation.parseAsync(body)
             return this.repository.create(body, cartAssociated)
         }
+        async forgetPass(dto){
+            await emailValidation.parseAsync(dto.email)
+            await passValidation.parseAsync(dto.password)
+            return this.repository.forgetPass(dto)
+        }
 }
     export default SessionManager

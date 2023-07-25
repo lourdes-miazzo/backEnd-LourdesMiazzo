@@ -5,9 +5,6 @@ import User from '../../domain/entities/user.js'
 class SessionMongooseRepository{
     async getOneByEmail(email){
             const document = await userModel.findOne({email})
-            if(!document){
-                throw new Error("User dont exist")
-            }
             return new User({
                 id: document?._id,
                 firstName: document?.firstName,
@@ -25,7 +22,7 @@ class SessionMongooseRepository{
     }
     async create(body, cartAssociated){
         body.cart = cartAssociated.id
-            const hashedPassword = await createHash(body)
+            const hashedPassword = await createHash(body.password)
             const userHashed = {...body, password : hashedPassword}
             const document = await userModel.create(userHashed)
 
@@ -39,6 +36,15 @@ class SessionMongooseRepository{
                 isAdmin: document.isAdmin,
                 cart: document.cart
             })
+    }
+    async forgetPass(dto){
+        const user = await userModel.findOne({email: dto.email})
+        //acá hago que el password viejo del user sea renovado por el nuevo password ya hasheado 
+        //que se pasó por el body
+        user.password = dto.password
+
+        const updatePass= await userModel.updateOne({_id : user.id}, user);
+        return updatePass
     }
 }
 

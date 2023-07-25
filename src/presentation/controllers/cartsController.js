@@ -1,12 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
-import {resolve} from "path"
-const resolverPath = resolve('IMG')
 
 import CartManager from "../../domain/manager/CartManager.js"
 import ProductManager from "../../domain/manager/ProductManager.js"
 import TicketManager from "../../domain/manager/TicketManager.js"
-import { transport } from "../../shared/index.js"
-import mailTicketTemplate from "../templates/mailTicketTemplate.js"
+import EmailManager from '../../domain/manager/EmailManager.js'
 
 export const gelList = async(req,res,next)=>{
     try{
@@ -136,19 +133,10 @@ export const purchaseProductsInCart= async(req,res,next)=>{
 
             //se envia al mail del comprador la info del ticket
             const ticketString = JSON.stringify(newTicket, null, 2)
-            const mailContent= mailTicketTemplate(ticketString)
-            const mail= {
-                from : "lourdesmiazzo@gmail.com",
-                to: req.user.email,
-                subject: "Ticket de compra",
-                html: mailContent,
-                attachments: [{
-                    filename: 'iconoLourdes.png',
-                    path: resolverPath + "/iconoLourdes.png",
-                    cid: '1'
-                }]        
-            }
-            await transport.sendMail(mail)
+            
+            const userEmail= req.user.email
+            const emailManager = new EmailManager()
+            await emailManager.emailTicket(ticketString, userEmail)
             //se borra todo dentro de carts
             await manager.deleteAllInsideCart(id)
             

@@ -48,14 +48,16 @@ export const saveNew=async (req,res,next)=>{
     try {
         const body = req.body
         body.code = uuidv4()
-        
+        body.owner = req.user.email
+
         const manager = new ProductManager()
         const result = await manager.createNew(body)
+  
 
         res.status(201).send({
             result: "success", 
             message: `New product created`, 
-            payload: result});
+            payload: result})
     }
     catch (e) {
         next(e)
@@ -87,11 +89,10 @@ export const deleteOne = async(req,res,next)=>{
 
         const manager = new ProductManager()
         const deleteProd= await manager.deleteProd(pid)
-
-        res.status(204).send({
-            result: "succes", 
-            message: `Product deleted`, 
-            payload: deleteProd})
+    
+        res.status(200).send({
+            result: "success", 
+            message: `Product deleted`}) 
     }
     catch(e){
         next(e)

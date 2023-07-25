@@ -1,6 +1,12 @@
+import jwt from "jsonwebtoken"
+
 import CartManager from "../../domain/manager/CartManager.js"
 import SessionManager from "../../domain/manager/SessionManager.js"
-import { generateToken } from "../../shared/index.js"
+import EmailManager from "../../domain/manager/EmailManager.js"
+import { generateToken, generateTokenNewPassword } from "../../shared/index.js"
+import { transport, createHash } from "../../shared/index.js"
+
+
 
 export const login= async (req,res, next)=>{
     try{
@@ -50,17 +56,21 @@ export const current = async(req, res, next)=>{
 export const signup= async (req,res, next)=>{
     try{
         const body= req.body
+        
         const cart = new CartManager()
         const cartAssociated = await cart.newCart()
 
         const manager = new SessionManager()
-        const user = await manager.create(body, cartAssociated)
-      
-        res.status(201).send({ 
+        const userExist = await manager.getOneByEmail(body.email)
+     
+        if(userExist.id === undefined){
+            const user = await manager.create(body, cartAssociated)
+            return res.status(201).send({ 
             status: 'success', 
             message: 'User created.',
-            payload: user }) 
-    
+            payload: user })  
+        } 
+        res.status(400).send({  status: 'error', message: 'Mail already in use'})
     }
     catch(e){
         next(e)
@@ -81,3 +91,61 @@ export const logout= async (req,res, next)=>{
         next(e)
     }
 }
+
+export const forgetPassword = async(req, res, next)=>{
+    try{
+        const email = req.body.email
+
+        const manager = new SessionManager()
+        const userEmail = await manager.getOneByEmail(email)
+        if(userEmail.id === undefined){
+            return res.status(401).send({ message: 'This email dont have an account associated'})
+        }
+        const tokenPassword = await generateTokenNewPassword(userEmail)
+
+        const emailManager= new EmailManager()
+        await emailManager.emailPassword(tokenPassword, email)
+        
+        res.status(200).send({message: "mail send"}) 
+    }
+    catch(e){
+        next(e)
+    }
+}
+
+
+export const newPassword = async(req,res, next)=>{
+        try {
+            const token = req.params.token
+            const email = req.params.email
+            const newPassword = req.body.password
+            
+            //controlar si el token expiró
+            jwt.verify(token, process.env.PRIVATE_KEY_2, async(error, credentials)=>{
+                if(error){
+                    //si expiró se envía un nuevo mail
+                    const tokenPassword = await generateTokenNewPassword(email)
+
+                    const emailManager= new EmailManager()
+                    await emailManager.emailPassword(tokenPassword, email)
+                    
+                    res.status(403).send({message: "Expired token, new mail sended"})
+                }else{
+                    //si no expiró se toma la informacion de la nueva contraseña, se la hashea y se la 
+                    //incluye actualizando la info del usuario en la db
+                    const manager = new SessionManager();
+                    const dto = {
+                        email,
+                        password: await createHash(newPassword),
+                    };
+                    await manager.forgetPass(dto);
+                    res.status(200).send({ message: "Password changed correctly" });
+                }
+            }) 
+        } catch (e) {
+            next(e)
+        }
+} 
+
+
+

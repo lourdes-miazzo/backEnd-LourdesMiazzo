@@ -15,6 +15,7 @@ class ProductMongooseRepository{
             stock: doc.stock,
             category: doc.category,
             status: doc.status,
+            owner: doc.owner
         }))
         return {
             products,
@@ -33,6 +34,7 @@ class ProductMongooseRepository{
             stock: document.stock,
             category: document.category,
             status: document.status,
+            owner: document.owner
         })
     }
     async createNew(body){
@@ -47,6 +49,7 @@ class ProductMongooseRepository{
             stock: document.stock,
             category: document.category,
             status: document.status,
+            owner: document.owner
         })
     }
     async updateProd(pid, body){
@@ -62,6 +65,7 @@ class ProductMongooseRepository{
             stock: docUpdated.stock,
             category: docUpdated.category,
             status: docUpdated.status,
+            owner: docUpdated.owner
         })
     }
     async deleteProd(pid){

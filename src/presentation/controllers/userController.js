@@ -93,3 +93,25 @@ export const deleteUser = async (req,res, next)=>{
         next(e)
     }
 }
+export const modifyUser= async (req,res, next)=>{
+    const id= req.params.id
+
+    const manager = new UserManager()
+    const user = await manager.getOne(id)
+
+    const findPremiumIndex = user.role.findIndex((role) => role === "premium");
+    if (findPremiumIndex !== -1) {
+      //si "premium" está presente, se elimina
+        user.role.splice(findPremiumIndex, 1);
+    } else {
+      //sino se agrega
+        user.role.push("premium");
+    } 
+
+    const modifyRole= await manager.updateOne(id, user)
+    
+    res.status(200).send({
+        status: "success", 
+        message: "User modified correctly",
+        payload: modifyRole})
+}

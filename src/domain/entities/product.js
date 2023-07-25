@@ -8,6 +8,7 @@ class Product{
         this.code = props.code;
         this.stock = props.stock;
         this.status = props.status;
+        this.owner= props.owner;
     }
 }
 

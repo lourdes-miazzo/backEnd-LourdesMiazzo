@@ -8,7 +8,8 @@ const createProductValidation = z.object({
     code: z.string(),
     stock: z.number(),
     category: z.string(),
-    status: z.boolean().optional()
+    status: z.boolean().optional(),
+    owner: z.string().optional()
 })
 
 export default createProductValidation

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { allUsers, oneUser, saveNewUser, saveCartInUser, updateUser, deleteUser } from "../controllers/userController.js";
+import { allUsers, oneUser, saveNewUser, saveCartInUser, updateUser, deleteUser, modifyUser } from "../controllers/userController.js";
 import auth from "../middlewares/auth.js";
 import authorization from "../middlewares/authorization.js";
 
@@ -11,5 +11,6 @@ userRouter.post("/", auth, authorization("postUser"), saveNewUser)
 userRouter.post("/:id", auth, authorization("postCartInUser"), saveCartInUser) 
 userRouter.put("/:id", auth, authorization("putUser"), updateUser)
 userRouter.delete("/:id", auth, authorization("deleteUser"), deleteUser)
+userRouter.post("/premium/:id", auth, authorization("modifyUser"), modifyUser)
 
 export default userRouter
