@@ -25,7 +25,10 @@
     "mongoose": "^7.0.4",
     "mongoose-paginate-v2": "^1.7.1",
     "nodemailer": "^6.9.3",
+    "path": "^0.12.7",
     "shelljs": "^0.8.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },

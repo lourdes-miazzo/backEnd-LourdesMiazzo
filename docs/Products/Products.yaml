@@ -1,0 +1,192 @@
+paths:
+  /api/products:
+    get:
+      summary: Se obtiene una lista de productos
+      tags:
+        - Products
+      responses:
+        "200":
+          description: All products found
+          content:
+            aplication/json:
+              schema:
+                $type: array
+                items:
+                  $ref: '#components/schemas/Products'
+
+    post:
+      summary: Se crea un nuevo producto
+      tags:
+        - Products
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: New product created
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/createProduct'
+
+  /api/products/{pid}:
+    parameters: 
+      - name: pid
+        in: path
+        required: true
+        description: Id del producto 
+        schema: 
+          $type: String
+
+    get:
+      summary: Se obtiene un producto especifico de la  lista, que coincide con el id pasado por parametro
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Product with Id ${pid} found
+          content:
+            aplication/json:
+              schema:
+                $ref: '#components/schemas/Products'
+      
+    put:
+      summary: Permite actualizar la info del producto con el Id pasado por parametro
+      tags: 
+        - Products
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Product updated
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateProduct'
+      
+    delete:
+      summary: Elimina el producto con el Id pasado por parametro
+      tags: 
+        - Products
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Product deleted
+
+
+
+
+
+components:
+  schemas: 
+    Products:
+      type: object
+      properties: 
+        id: 
+          type: ObjectId
+          description: Id autogenerado por Mongo
+        title:
+          type: String
+          description: Nombre de la obra
+        description:
+          type: String
+          description: Informacion del tamaño de la obra
+        price:
+          type: Number
+          description: Precio de la obra
+        thumbnail:
+          type: String
+          description: Link a una imagen de obra
+        code:
+          type: String
+          description: Codigo autogenerado por uuid4
+        stock:
+          type: Number
+          description: Cantidad de  piezas de la misma obra disponibles para la venta
+        category:
+          type: String
+          description: Etiqueta que se basa en el tamaño de las piezas, s, m o l y permite luego filtrar las obras segun esta característica
+        status:
+          type: String
+          description: True o False dependiendo si hay o no stock de la obra
+        owner:
+          type: String
+          description: Email de quien creo el producto en la app
+
+  requestBodies:
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: String
+          description: Nombre de la obra
+        description:
+          type: String
+          description: Informacion del tamaño de la obra
+        price:
+          type: Number
+          description: Precio de la obra
+        thumbnail:
+          type: String
+          description: Link a una imagen de obra
+        stock:
+          type: Number
+          description: Cantidad de  piezas de la misma obra disponibles para la venta
+        category:
+          type: String
+          description: Etiqueta que se basa en el tamaño de las piezas, s, m o l y permite luego filtrar las obras segun esta característica
+        status:
+          type: String
+          description: True o False dependiendo si hay o no stock de la obra
+        owner:
+          type: String
+          description: Email de quien creo el producto en la app
+      example:
+        title: Dinámica del orden II
+        description: Medidas dinámicas al modificar la posición de piezas individuales
+        price: 10000
+        thumbnail: https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/2018-6.jpg?alt=media&token=9a514e97-7120-4ddf-b674-d5d383ac38ee
+        code: 9015a9a3-7127-4c00-8c71-9441a5d81c17
+        stock: 100
+        category: s
+        owner: lourdesmiazzo@proton.me
+    
+    createProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Nombre de la obra
+        description:
+          type: string
+          description: Informacion del tamaño de la obra
+        price:
+          type: number
+          description: Precio de la obra
+        thumbnail:
+          type: string
+          description: Link a una imagen de obra
+        stock:
+          type: number
+          description: Cantidad de piezas de la misma obra disponibles para la venta
+        category:
+          type: string
+          description: Etiqueta que se basa en el tamaño de las piezas, s, m o l y permite luego filtrar las obras segun esta característica
+      example:
+        title: las formas del color
+        description: 70 por 70 cms
+        price: 185000
+        thumbnail: https://firebasestorage.googleapis.com/v0/b/ecommerceart-fb0d5.appspot.com/o/2018-6.jpg?alt=media&token=9a514e97-7120-4ddf-b674-d5d383ac38ee
+        stock: 6
+        category: m
+
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+

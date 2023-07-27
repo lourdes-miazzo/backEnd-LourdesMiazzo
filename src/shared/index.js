@@ -28,5 +28,3 @@ export const transport= nodemailer.createTransport({
         rejectUnauthorized: false
     } 
 })
-
-

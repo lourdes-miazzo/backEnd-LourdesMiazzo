@@ -76,7 +76,7 @@ export const saveProdInCart = async (req, res,next) => {
                         payload: cart})
             }
             const prodQuantityUpdated = await manager.addProd(id, pid)
-            res.status(200).send({
+            res.status(201).send({
                 result: "success", 
                 message: `Product ${pid} added in cart ${id}`,
                 payload:prodQuantityUpdated})
@@ -87,18 +87,18 @@ export const saveProdInCart = async (req, res,next) => {
 export const purchaseProductsInCart= async(req,res,next)=>{
     try{
             const id = req.params.id
-        
+      
             const product = new ProductManager()
             const manager= new CartManager()
             //ver que prod están en cart
             const getProdInCart= await manager.purchaseProd(id)
             const prodInCartInfo = getProdInCart.products
-
+    
             let amount = 0
             //obtener info completa de cada prod para obtener el precio y poder multiplicarlo por la cantidad,
             //así recupero el valor final total, 
             for (let index = 0; index < prodInCartInfo.length; index++) {
-                let idProd = prodInCartInfo[index].id
+                let idProd = prodInCartInfo[index]._id.toString()
                 let quantityProd = prodInCartInfo[index].quantity
                 let completeProductInfo = await product.getOne(idProd)
 
@@ -117,7 +117,7 @@ export const purchaseProductsInCart= async(req,res,next)=>{
                 const prodModific = await product.updateProd(idProd, dto)
 
                 let subTotal = completeProductInfo.price * quantityProd
-                amount += subTotal 
+                amount += subTotal  
             } 
 
             //se arma la info del ticket para enviar y crear ticket en db
@@ -185,17 +185,17 @@ export const deleteAllProdInCart= async(req,res,next)=>{
 
 export const updateCart= async (req,res,next)=>{
     try{
-        const {id} = req.params
+        const id = req.params.id
         const body= req.body
+
         const product = new ProductManager()
 
-        console.log(body)
         let arrayProd= []
         //acá se controla que en el carrito que se hace el update no se agreguen
         // prod q no tienen el stock suficiente
         for (let index = 0; index < body.length; index++) {
             const quantity = body[index].quantity;
-            const idProd= body[index]._id
+            const idProd= body[index].id
             const prodInfo= await product.getOne(idProd)
 
             if(prodInfo.stock >= quantity){

@@ -52,12 +52,11 @@ export const saveNew=async (req,res,next)=>{
 
         const manager = new ProductManager()
         const result = await manager.createNew(body)
-  
 
         res.status(201).send({
             result: "success", 
             message: `New product created`, 
-            payload: result})
+            payload: result}) 
     }
     catch (e) {
         next(e)
@@ -75,7 +74,7 @@ export const update = async (req, res,next)=>{
         res.status(200).send({
             result: "success", 
             message: `Product updated`, 
-            payload: updateProd})
+            payload: updateProd}) 
     }
     catch(e){
         next(e)

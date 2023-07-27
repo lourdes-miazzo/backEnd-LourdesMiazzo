@@ -2,7 +2,9 @@ import jwt from "jsonwebtoken"
 
 //acá se verifica que el token sea válido
 const auth = (req, res, next)=>{
+
     const authHeader= req.headers.authorization
+  
 
     if(!authHeader){
         return res.status(401).send({message: "Authorization header empty"})

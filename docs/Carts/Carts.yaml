@@ -1,0 +1,200 @@
+paths:
+  /api/carts:
+    get:
+      summary: Se obtiene una lista de los carritos guardados en el sistema
+      tags:
+        - Carts
+      security:
+          - bearerAuth: []
+      responses:
+        "200":
+          description: All carts found
+          content:
+            aplication/json:
+              schema:
+                $type: array
+                items:
+                  $ref: '#components/schemas/Carts'
+
+    post:
+      summary: Se crea un nuevo carrito
+      tags:
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: New cart created
+
+
+  /api/carts/{id}:
+    parameters: 
+      - name: id
+        in: path
+        required: true
+        description: Id del carrito
+        schema: 
+          $type: String
+    
+    get:
+      summary: Se obtiene un carrito especifico de la  lista, que coincide con el id pasado por parametro
+      tags:
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Cart with Id ${id} found
+          content:
+            aplication/json:
+              schema:
+                $ref: '#components/schemas/Carts'
+
+    put:
+      summary: Se actualiza el carrito seleccionado a traves de su id, con la información pasada por body
+      tags:
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Cart ${id} updated
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateCart'
+
+    delete:
+      summary: Elimina todos los productos dentro del carrito
+      tags: 
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Cart ${id} empty
+
+
+  /api/carts/{id}/products/{pid}:
+    parameters: 
+      - name: id
+        in: path
+        required: true
+        description: Id del carrito
+        schema: 
+          $type: String
+      - name: pid
+        in: path
+        required: true
+        description: Id del producto 
+        schema: 
+          $type: String
+    
+    post: 
+      summary: agrega de a uno al carrito, el producto cuyo pid se pasó por parametro, teniendo en cuenta que si no hay stock no permite seguir agregando unidades
+      tags: 
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Product ${pid} added in cart ${id}
+        '400':
+          description: Product ${pid} cannot be added in cart ${id} for stock lacking
+    
+    put: 
+      summary: Actualiza la cantidad (que se envía por body) del producto(pid) en el carrito especifico(id), teniendo en cuenta que si no hay stock no permite agregarlo 
+      tags: 
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Product ${pid} updated in cart ${id}
+        '400':
+          description: Product ${pid} cannot be updated in cart ${id} for stock lacking
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateQuantityInCart'
+    
+    delete: 
+      summary: Elimina solo el producto específico, pasado por parametro(pid), del carrito(id)
+      tags: 
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Product ${pid} deleted from cart ${id}
+
+  /api/carts/{id}/purchase:
+    parameters: 
+      - name: id
+        in: path
+        required: true
+        description: Id del carrito
+        schema: 
+          $type: String
+
+    post:
+      summary: Se hace el calculo del precio de venta de todos los productos dentro del carrito, se envia al mail del comprador el ticket y se vacía el carrito 
+      tags: 
+        - Carts
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Products purchased successfully
+        
+
+
+components:
+  schemas: 
+    Carts:
+      type: object
+      properties: 
+        id: 
+          type: ObjectId
+          description: Id autogenerado por Mongo
+        products:
+          type: Array
+          description: Array que contiene objetos conformados por el Id del producto y la cantidad del mismo
+
+  requestBodies:
+    updateCart:
+      type: array
+      items:
+        type: object
+      properties:
+          id:
+            type: String
+            description: Id del producto a agregar en el carrito
+          quantity:
+            type: Number
+            description: Cantidad del producto que se quiere agregar en el carrito
+      example:
+        [
+          {
+            id: 644990bfa53bc7a2cb4ca6d2,
+            quantity: 3
+          }
+        ]
+
+    updateQuantityInCart:
+      type: object
+      properties:
+        quantity:
+          type: Number
+          description: Cantidad del producto que se quiere agregar en el carrito
+      example:
+        quantity: 4
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

@@ -5,7 +5,7 @@ const createProductValidation = z.object({
     description: z.string(),
     price: z.number(),
     thumbnail: z.string(),
-    code: z.string(),
+    code: z.string().optional(),
     stock: z.number(),
     category: z.string(),
     status: z.boolean().optional(),

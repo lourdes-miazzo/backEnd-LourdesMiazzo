@@ -3,6 +3,7 @@ import { deleteOne, getList, getOne, saveNew, update } from "../controllers/prod
 import auth from "../middlewares/auth.js"
 import { authorizationAdminAndPremium } from "../middlewares/authorizationAdminAndPremium.js";
 import { authorizationAdminAndPremium2 } from "../middlewares/authorizationAdminAndPremium2.js"
+
 const productRouter = Router()
 
 productRouter.get("/", getList)
