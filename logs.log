@@ -1,0 +1,9 @@
+
+{"level":"http","message":"GET en /api/loggerTest - 09:50:31","timestamp":"2023-08-03T12:50:31.024Z"}
+{"level":"fatal","message":"Esto es un mensaje de error fatal","timestamp":"2023-08-03T12:50:31.026Z"}
+{"level":"error","message":"Esto es un mensaje de error","timestamp":"2023-08-03T12:50:31.027Z"}
+{"level":"warning","message":"Esto es un mensaje de advertencia","timestamp":"2023-08-03T12:50:31.029Z"}
+{"level":"info","message":"Esto es un mensaje informativo","timestamp":"2023-08-03T12:50:31.030Z"}
+{"level":"http","message":"Esto es un mensaje detallado","timestamp":"2023-08-03T12:50:31.031Z"}
+{"level":"debug","message":"Esto es un mensaje de depuración","timestamp":"2023-08-03T12:50:31.032Z"}
+{"level":"http","message":"POST en /api/sessions/login - 09:50:53","timestamp":"2023-08-03T12:50:53.628Z"}

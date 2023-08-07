@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 export const getList = async(req,res,next)=>{
     try{
+        req.logger.debug('product controller: get all')
         let cat = req.query.cat 
         let limit = req.query.limit ? +req.query.limit : 10 
         let sort = req.query.sort ? +req.query.sort : undefined
@@ -30,6 +31,7 @@ export const getList = async(req,res,next)=>{
 
 export const getOne =async(req,res,next)=>{
     try{
+        req.logger.debug('product controller: get one')
         const pid = req.params.pid
         const manager = new ProductManager()
         let findOneProd=  await manager.getOne(pid)
@@ -46,6 +48,7 @@ export const getOne =async(req,res,next)=>{
 
 export const saveNew=async (req,res,next)=>{
     try {
+        req.logger.debug('product controller: create new product')
         const body = req.body
         body.code = uuidv4()
         body.owner = req.user.email
@@ -65,6 +68,7 @@ export const saveNew=async (req,res,next)=>{
 
 export const update = async (req, res,next)=>{
     try{
+        req.logger.debug('product controller: update one product')
         const {pid} = req.params
         const body=req.body
 
@@ -84,6 +88,7 @@ export const update = async (req, res,next)=>{
 
 export const deleteOne = async(req,res,next)=>{
     try{
+        req.logger.debug('product controller: delete one')
         const pid= req.params.pid
 
         const manager = new ProductManager()

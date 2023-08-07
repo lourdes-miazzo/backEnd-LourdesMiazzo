@@ -4,27 +4,33 @@ import CartManager from "../../domain/manager/CartManager.js"
 import SessionManager from "../../domain/manager/SessionManager.js"
 import EmailManager from "../../domain/manager/EmailManager.js"
 import { generateToken, generateTokenNewPassword } from "../../shared/index.js"
-import { transport, createHash } from "../../shared/index.js"
+import { createHash } from "../../shared/index.js"
 
 
 
 export const login= async (req,res, next)=>{
     try{
+
+        req.logger.debug("session controller: login")
         const email = req.body.email
         const password = req.body.password 
-
+    
         const manager = new SessionManager()
         const user = await manager.getOneByEmail(email)
 
-        if(!user){
-            return res.status(401).send({ message: 'Login failed, user dont exist.'})
+        if(user.id === undefined){
+            const error = new Error('Login failed, user dont exist.');
+            error.statusCode = 401;
+            throw error;
         }
         //siempre va primero el password que se recibe por body y luego el que se obtiene
         // al obtener el objeto usuario!!!
         const isHashedPassword = await manager.collate(password, user)
-        if (!isHashedPassword)
-        {
-            return res.status(401).send({ message: 'Login failed, invalid password.'})
+
+        if (!isHashedPassword){
+            const error = new Error('invalid password.');
+            error.statusCode = 401;
+            throw error;
         }
         //una vez que se comprueba la coincidencia de la contraseña ingresada con la guardada  
         //se genera un token con la info del usuario,  que se guarda del lado del cliente para 
@@ -43,6 +49,7 @@ export const login= async (req,res, next)=>{
 
 export const current = async(req, res, next)=>{
     try{
+        req.logger.debug("session controller: current")
         //como se setean las credenciales en el usuario ahora vamos a poder acceder al user y 
         //tener acceso a la info del login
         res.status(200).send({
@@ -55,6 +62,7 @@ export const current = async(req, res, next)=>{
 }
 export const signup= async (req,res, next)=>{
     try{
+        req.logger.debug("session controller: signup")
         const body= req.body
         
         const cart = new CartManager()
@@ -78,6 +86,7 @@ export const signup= async (req,res, next)=>{
 }
 export const logout= async (req,res, next)=>{
     try{
+        req.logger.debug("session controller: logout")
         req.session.destroy(err=>{
             if(!err){
                 return res.status(200).send({message: "logout ok!"})
@@ -94,6 +103,7 @@ export const logout= async (req,res, next)=>{
 
 export const forgetPassword = async(req, res, next)=>{
     try{
+        req.logger.debug("session controller: forget password")
         const email = req.body.email
 
         const manager = new SessionManager()
@@ -116,6 +126,7 @@ export const forgetPassword = async(req, res, next)=>{
 
 export const newPassword = async(req,res, next)=>{
         try {
+            req.logger.debug("session controller: new password")
             const token = req.params.token
             const email = req.params.email
             const newPassword = req.body.password

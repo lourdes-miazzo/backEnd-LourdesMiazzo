@@ -3,13 +3,16 @@ import swaggerUiExpress from "swagger-ui-express"
 import swaggerJsdoc from "swagger-jsdoc"
 import path from 'path'
 
+import { addLoggerTest } from '../../utils/loggerTest.js'
+import {addLogger} from "../../utils/logger.js"
 import productRouter from "../routes/productRouter.js"
 import cartRouter from "../routes/cartRouter.js"
 import sessionRouter from '../routes/sessionRouter.js'
 import userRouter from '../routes/userRouter.js'
 import roleRouter from '../routes/roleRouter.js'
-
+import loggerRouter from "../routes/loggerRouter.js"
 import errorHandler from '../middlewares/errorHandler.js'
+
 
 
 class AppExpress{
@@ -17,6 +20,8 @@ class AppExpress{
         this.app = express();
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(addLogger);
+        this.app.use(addLoggerTest);
     }
     setupSwagger() {
         const relativeRoute= ""
@@ -44,6 +49,7 @@ class AppExpress{
         this.app.use("/api/sessions", sessionRouter)
         this.app.use("/api/users", userRouter)
         this.app.use("/api/roles", roleRouter)
+        this.app.use("/api/loggerTest", loggerRouter)
 
         this.app.use(errorHandler)
     }

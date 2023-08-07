@@ -7,6 +7,7 @@ import EmailManager from '../../domain/manager/EmailManager.js'
 
 export const gelList = async(req,res,next)=>{
     try{
+        req.logger.debug("cart controller: all carts")
         let limit = req.query.limit ? +req.query.limit : 10 
         let page = req.query.page ? +req.query.page : 1
 
@@ -26,6 +27,7 @@ export const gelList = async(req,res,next)=>{
 
 export const getOne = async (req,res,next)=>{
     try{
+        req.logger.debug("cart controller: one cart")
         const {id} = req.params
 
         const manager = new CartManager()
@@ -43,6 +45,7 @@ export const getOne = async (req,res,next)=>{
 
 export const saveNew = async(req,res,next)=>{
     try{
+        req.logger.debug("cart controller: new cart")
         const manager = new CartManager()
         const nuevoCarrito = await manager.newCart()
 
@@ -58,6 +61,7 @@ export const saveNew = async(req,res,next)=>{
 
 export const saveProdInCart = async (req, res,next) => {
         try {
+            req.logger.debug("cart controller: add products in cart")
             const id = req.params.id
             const pid= req.params.pid
 
@@ -86,8 +90,9 @@ export const saveProdInCart = async (req, res,next) => {
 }
 export const purchaseProductsInCart= async(req,res,next)=>{
     try{
+            req.logger.debug("cart controller: buy products in cart")
             const id = req.params.id
-      
+
             const product = new ProductManager()
             const manager= new CartManager()
             //ver que prod están en cart
@@ -152,6 +157,7 @@ export const purchaseProductsInCart= async(req,res,next)=>{
 
 export const deleteProdInCart = async (req,res,next)=>{
     try{
+        req.logger.debug("cart controller: delete especific product in cart")
         const id = req.params.id
         const pid= req.params.pid
 
@@ -169,6 +175,7 @@ export const deleteProdInCart = async (req,res,next)=>{
 
 export const deleteAllProdInCart= async(req,res,next)=>{
     try{
+        req.logger.debug("cart controller: delete all products in cart")
         const id = req.params.id
 
         const manager= new CartManager()
@@ -185,6 +192,7 @@ export const deleteAllProdInCart= async(req,res,next)=>{
 
 export const updateCart= async (req,res,next)=>{
     try{
+        req.logger.debug("cart controller: update cart")
         const id = req.params.id
         const body= req.body
 
@@ -217,6 +225,7 @@ export const updateCart= async (req,res,next)=>{
 
 export const updateProdInCart = async (req,res,next)=>{
     try{
+        req.logger.debug("cart controller: especific product updated in cart")
         const {id, pid} = req.params
         const body = req.body
 
