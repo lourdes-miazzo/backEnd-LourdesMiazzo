@@ -31,6 +31,7 @@ export const oneRole=async(req, res,next)=>{
 }
 export const saveRole= async(req, res,next)=>{
     try{
+        console.log(req.body)
         const body= req.body
 
         const manager = new RoleManager()

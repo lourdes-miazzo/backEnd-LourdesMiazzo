@@ -10,7 +10,9 @@ const userSchema = new mongoose.Schema({
     password: {type: Schema.Types.String, required: true},
     cart: {type: Schema.Types.ObjectId, ref:'carts', index: true},
     role:[{type: Schema.Types.String}],
-    isAdmin: {type: Schema.Types.Boolean, default: false}
+    isAdmin: {type: Schema.Types.Boolean, default: false},
+    documents: [{name:{type: Schema.Types.String}, link:{type: Schema.Types.String}}],
+    lastConnection: {type: Schema.Types.String}
 })
 
 

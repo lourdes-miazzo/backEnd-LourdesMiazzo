@@ -12,16 +12,17 @@ class SessionMongooseRepository{
                 email: document?.email,
                 age: document?.age,
                 password: document?.password,
+                cart: document?.cart,
                 role: document?.role,
                 isAdmin: document?.isAdmin, 
-                cart: document?.cart
+                documents: document?.documents,
+                lastConnection: document?.lastConnection
             })
     }
     async collate(password, user){
             return passwordsCompare(password, user)
     }
-    async create(body, cartAssociated){
-        body.cart = cartAssociated.id
+    async create(body){
             const hashedPassword = await createHash(body.password)
             const userHashed = {...body, password : hashedPassword}
             const document = await userModel.create(userHashed)
@@ -32,9 +33,11 @@ class SessionMongooseRepository{
                 lastName: document.lastName,
                 email: document.email,
                 age: document.age,
+                cart: document.cart,
                 role: document.role,
                 isAdmin: document.isAdmin,
-                cart: document.cart
+                documents: document.documents,
+                lastConnection: document.lastConnection
             })
     }
     async forgetPass(dto){

@@ -16,7 +16,8 @@ class UserMongooseRepository{
                 cart: d.cart,
                 role: d.role,
                 isAdmin: d.isAdmin,
-                cart: d.cart
+                documents: d.documents,
+                lastConnection: d.lastConnection
             }))
             return {
                 users, pagination
@@ -35,7 +36,9 @@ class UserMongooseRepository{
                 age: document?.age,
                 cart: document?.cart,
                 role: document?.role,
-                isAdmin: document?.isAdmin
+                isAdmin: document?.isAdmin,
+                documents: document?.documents,
+                lastConnection: document?.lastConnection
             })
     }
     async create(body){
@@ -50,7 +53,9 @@ class UserMongooseRepository{
                 age: document.age,
                 cart: document.cart,
                 role: document.role,
-                isAdmin: document.isAdmin
+                isAdmin: document.isAdmin,
+                documents: document.documents,
+                lastConnection: document.lastConnection
             })
     }
     async saveCartInUser(id, createCart){
@@ -67,7 +72,9 @@ class UserMongooseRepository{
                 age: document.age,
                 cart: document.cart,
                 role: document.role,
-                isAdmin: document.isAdmin
+                isAdmin: document.isAdmin,
+                documents: document.documents,
+                lastConnection: document.lastConnection
             })
     }
     async updateOne(id, body){
@@ -83,8 +90,14 @@ class UserMongooseRepository{
                 age: document.age,
                 cart: document.cart,
                 role: document.role,
-                isAdmin: document.isAdmin
+                isAdmin: document.isAdmin,
+                documents: document.documents.map(doc => ({
+                    name: doc.name,
+                    link: doc.link
+                })),
+                lastConnection: document.lastConnection
             })
+
     }
     async deleteOne(id){
             await userModel.deleteOne({_id: id})

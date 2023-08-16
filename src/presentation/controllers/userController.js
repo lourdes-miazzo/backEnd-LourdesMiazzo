@@ -95,17 +95,28 @@ export const deleteUser = async (req,res, next)=>{
 }
 export const modifyUser= async (req,res, next)=>{
     const id= req.params.id
+    const files= req.files
+    const requiredFiles= ["identification", "adressProof", "countStateProof"]
+    
+    for(const fieldname of requiredFiles){
+        if(!req.files.find(file=> file.fieldname === fieldname)){
+            return res.status(400).send({message: `File ${fieldname} has not been uploaded yet`})
+        }
+    } 
+    const documentsInfo= files.map(f=>({name: f.originalname, link: f.path})) 
 
     const manager = new UserManager()
     const user = await manager.getOne(id)
 
-    const findPremiumIndex = user.role.findIndex((role) => role === "premium");
+    const findPremiumIndex = user.role.findIndex((role) => role === "premium")
     if (findPremiumIndex !== -1) {
       //si "premium" está presente, se elimina
-        user.role.splice(findPremiumIndex, 1);
+        user.role.splice(findPremiumIndex, 1)
     } else {
       //sino se agrega
-        user.role.push("premium");
+        user.role.push("premium")
+        //y se agrega la info de los archivos a documents
+        user.documents = documentsInfo
     } 
 
     const modifyRole= await manager.updateOne(id, user)
@@ -113,5 +124,17 @@ export const modifyUser= async (req,res, next)=>{
     res.status(200).send({
         status: "success", 
         message: "User modified correctly",
-        payload: modifyRole})
+        payload: modifyRole})   
+}
+
+export const postDocuments= async(req,res,next)=>{
+    try{
+        if (!req.files){
+            return  res.status(400).send({message: "Your file has not been uploaded successfully"})
+        }
+        res.status(200).send({message: "File uploaded successfully"})
+    }
+    catch(e){
+        next(e)
+    }
 }

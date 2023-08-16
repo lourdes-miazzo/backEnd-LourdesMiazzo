@@ -1,8 +1,10 @@
 import jwt from "jsonwebtoken"
-
+import dotenv from "dotenv"
+dotenv.config()
 import CartManager from "../../domain/manager/CartManager.js"
 import SessionManager from "../../domain/manager/SessionManager.js"
 import EmailManager from "../../domain/manager/EmailManager.js"
+import UserManager from "../../domain/manager/UserManager.js"
 import { generateToken, generateTokenNewPassword } from "../../shared/index.js"
 import { createHash } from "../../shared/index.js"
 
@@ -17,6 +19,7 @@ export const login= async (req,res, next)=>{
     
         const manager = new SessionManager()
         const user = await manager.getOneByEmail(email)
+        user.lastConnection = new Date().toLocaleString('es-AR', {timeZone: 'America/Argentina/Buenos_Aires'})
 
         if(user.id === undefined){
             const error = new Error('Login failed, user dont exist.');
@@ -64,21 +67,22 @@ export const signup= async (req,res, next)=>{
     try{
         req.logger.debug("session controller: signup")
         const body= req.body
-        
+
         const cart = new CartManager()
         const cartAssociated = await cart.newCart()
+        body.cart= cartAssociated.id
 
         const manager = new SessionManager()
         const userExist = await manager.getOneByEmail(body.email)
      
         if(userExist.id === undefined){
-            const user = await manager.create(body, cartAssociated)
+            const user = await manager.create(body)
             return res.status(201).send({ 
             status: 'success', 
             message: 'User created.',
             payload: user })  
         } 
-        res.status(400).send({  status: 'error', message: 'Mail already in use'})
+        res.status(400).send({status: 'error', message: 'Mail already in use'})
     }
     catch(e){
         next(e)
@@ -87,14 +91,24 @@ export const signup= async (req,res, next)=>{
 export const logout= async (req,res, next)=>{
     try{
         req.logger.debug("session controller: logout")
-        req.session.destroy(err=>{
-            if(!err){
-                return res.status(200).send({message: "logout ok!"})
-            }
-            res.status(400).send({ 
-                message: 'Logout error!',
-                body: err })
-        })
+        const token = req.headers.cookie
+
+        const tokenAccess= token.split("=")[1]
+
+        jwt.verify(tokenAccess, process.env.PRIVATE_KEY, async(error, credentials)=>{
+            if(error) return res.status(403).send({message: "Authentication error"})
+
+        const infoUser = credentials.user
+        const id= infoUser.id
+        const newLastConnection= new Date().toLocaleString('es-AR', {timeZone: 'America/Argentina/Buenos_Aires'})
+
+        infoUser.lastConnection= newLastConnection
+        const userManager = new UserManager()
+        await userManager.updateOne(id,infoUser)  
+        }) 
+
+        res.clearCookie('accessToken')
+        res.status(200).send({ message: "logout ok!" }) 
     }
     catch(e){
         next(e)
