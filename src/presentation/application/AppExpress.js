@@ -69,7 +69,7 @@ class AppExpress
     }
     listen()
     {
-        return this.app.listen(process.env.NODE_PORT || 8080, () =>
+        return this.app.listen(process.env.NODE_PORT, () =>
         {
             console.log(`Conectado al server en el puerto: ${process.env.NODE_PORT}`);
         });
