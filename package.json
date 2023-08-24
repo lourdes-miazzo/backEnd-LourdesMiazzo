@@ -5,7 +5,8 @@
   "main": "",
   "scripts": {
     "test": "mocha src/tests/*.test.js",
-    "start": "nodemon",
+    "start": "node src/index.js",
+    "dev": "nodemon",
     "command": "node src/command.js",
     "lint-fix": "eslint -c .eslintrc ./src --fix",
     "lint": "eslint -c .eslintrc ./src"
