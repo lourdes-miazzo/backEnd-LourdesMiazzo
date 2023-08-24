@@ -1,5 +1,5 @@
-import z from "zod"
+import z from 'zod';
 
-const pidValidation =  z.string().length(24)
+const pidValidation =  z.string().length(24);
 
-export default pidValidation
+export default pidValidation;

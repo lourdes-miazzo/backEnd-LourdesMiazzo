@@ -1,5 +1,5 @@
-import z from "zod"
+import z from 'zod';
 
-const passValidation = z.string()
+const passValidation = z.string();
 
-export default passValidation
+export default passValidation;

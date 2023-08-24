@@ -1,8 +1,8 @@
-import { Router} from "express";
-import { getLogger } from "../controllers/loggerController.js";
+import { Router } from 'express';
+import { getLogger } from '../controllers/loggerController.js';
 
-const loggerRouter = Router()
+const loggerRouter = Router();
 
-loggerRouter.get("/", getLogger)
+loggerRouter.get('/', getLogger);
 
-export default loggerRouter
+export default loggerRouter;

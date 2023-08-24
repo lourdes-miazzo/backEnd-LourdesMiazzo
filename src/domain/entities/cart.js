@@ -1,8 +1,10 @@
-class Cart{
-    constructor(props){
+class Cart
+{
+    constructor(props)
+    {
         this.id = props.id;
         this.products = props.products;
     }
 }
 
-export default Cart
+export default Cart;

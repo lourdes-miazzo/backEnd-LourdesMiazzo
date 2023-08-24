@@ -1,5 +1,5 @@
-import z from "zod"
+import z from 'zod';
 
-const emailValidation = z.string().email()
+const emailValidation = z.string().email();
 
-export default emailValidation
+export default emailValidation;

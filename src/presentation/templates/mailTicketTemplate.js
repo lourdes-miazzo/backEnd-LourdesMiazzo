@@ -1,4 +1,5 @@
-const mailTicketTemplate = (ticketString)=>{
+const mailTicketTemplate = (ticketString) =>
+{
 const mailTemplate =  `<html>
                             <head>
                                 <style>
@@ -14,14 +15,14 @@ const mailTemplate =  `<html>
                                     <div>
                                         <h1>Ticket de compra</h1>
                                         <h2>${ticketString}</h2>
-                                        <p>Gracias por tu compra</p>
+                                        <h3>Gracias por tu compra!<h3>
                                         <img src="cid:1" style="height:200px; width:200 px"/>
                                     </div>
                                 </pre>
                             </body>
-                        </html>`
+                        </html>`;
 
-    return mailTemplate
-}
+    return mailTemplate;
+};
 
-export default mailTicketTemplate
+export default mailTicketTemplate;

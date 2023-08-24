@@ -8,4 +8,4 @@ module.exports = {
         ignore_watch: './dist/src/logs/*',
         instance_var: "0"
     }]
-  }
+}

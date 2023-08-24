@@ -1,5 +1,7 @@
-class Product{
-    constructor(props){
+class Product
+{
+    constructor(props)
+    {
         this.id = props.id;
         this.title = props.title;
         this.description = props.description;
@@ -8,8 +10,8 @@ class Product{
         this.code = props.code;
         this.stock = props.stock;
         this.status = props.status;
-        this.owner= props.owner;
+        this.owner = props.owner;
     }
 }
 
-export default Product
+export default Product;

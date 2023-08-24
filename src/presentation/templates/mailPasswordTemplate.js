@@ -1,7 +1,8 @@
-import dotenv from "dotenv"
-dotenv.config()
+import dotenv from 'dotenv';
+dotenv.config();
 
-const mailPasswordTemplate = (tokenPassword, email)=>{
+const mailPasswordTemplate = (tokenPassword, email) =>
+{
     const mail = `<html>
                         <head>
                             <style>
@@ -16,13 +17,13 @@ const mailPasswordTemplate = (tokenPassword, email)=>{
                             <pre>
                                 <div>
                                     <h1>Ingresa a este link para cambiar tu contraseña</h1>
-                                    <a><h3> http://localhost:${process.env.NODE_PORT}/api/sessions/newPassword/${tokenPassword}/${email} </h3></a>
+                                    <a href="http://localhost:${process.env.NODE_PORT}/api/sessions/resetPassword/${tokenPassword}/${email}"><h2>Hacé click aquí</h2></a>
                                     <img src="cid:1" style="height:200px; width:200 px"/>
                                 </div>
                             </pre>
                         </body>
-                </html>`
-    return mail
-} 
-export default mailPasswordTemplate
+                </html>`;
+    return mail;
+};
+export default mailPasswordTemplate;
 

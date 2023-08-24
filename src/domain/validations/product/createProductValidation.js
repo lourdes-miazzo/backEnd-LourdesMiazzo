@@ -1,7 +1,7 @@
-import z from "zod"
+import z from 'zod';
 
 const createProductValidation = z.object({
-    title: z.string(), 
+    title: z.string(),
     description: z.string(),
     price: z.number(),
     thumbnail: z.string(),
@@ -10,6 +10,6 @@ const createProductValidation = z.object({
     category: z.string(),
     status: z.boolean().optional(),
     owner: z.string().optional()
-})
+});
 
-export default createProductValidation
+export default createProductValidation;

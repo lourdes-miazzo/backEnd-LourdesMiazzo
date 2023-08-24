@@ -1,5 +1,5 @@
-import z from "zod"
+import z from 'zod';
 
-const idValidation=z.string().length(24)
+const idValidation = z.string().length(24);
 
-export default idValidation
+export default idValidation;
