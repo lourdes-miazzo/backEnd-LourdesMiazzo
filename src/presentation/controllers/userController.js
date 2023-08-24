@@ -159,7 +159,7 @@ export const modifyUser = async(req, res, next) =>
             const role = new RoleManager();
             const changeRole2 = await role.createRoleByName('premium');
             user.role = changeRole2.id;
-            // y se agrega la info de los archivos a documents */
+            // y se agrega la info de los archivos a documents
             user.documents = documentsInfo;
         }
         const modifyRole = await manager.updateOne(id, user);
@@ -167,7 +167,7 @@ export const modifyUser = async(req, res, next) =>
         res.status(200).send({
             status: 'success',
             message: 'User modified correctly',
-            payload: modifyRole });
+            payload: modifyRole }); 
     }
     catch (e)
     {
@@ -183,7 +183,7 @@ export const postDocuments = async(req, res, next) =>
         {
             return  res.status(400).send({ message: 'Your file has not been uploaded successfully' });
         }
-        res.status(200).send({ message: 'File uploaded successfully' });
+        res.status(200).send({ message: 'File uploaded successfully' }); 
     }
     catch (e)
     {

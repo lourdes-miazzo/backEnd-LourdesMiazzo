@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+
 import mongoose, { Schema } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
 
@@ -9,7 +9,7 @@ const cartsSchema = new mongoose.Schema({
     {
         type:
             [{
-                _id: { type: ObjectId, required: true, ref: 'products' },
+                _id: { type: Schema.Types.ObjectId, required: true, ref: 'products' },
                 quantity:{ type: Schema.Types.Number }
             }]
     }
